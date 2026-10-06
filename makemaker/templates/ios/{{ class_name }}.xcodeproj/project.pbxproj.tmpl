@@ -1,0 +1,421 @@
+// !$*UTF8*$!
+{% set project = 'ios:project' | id %}
+{% set main_group = 'ios:group:main' | id %}
+{% set app_group = 'ios:group:app' | id %}
+{% set tests_group = 'ios:group:tests' | id %}
+{% set products_group = 'ios:group:products' | id %}
+{% set fr_app = 'ios:fileref:app' | id %}
+{% set fr_test_bundle = 'ios:fileref:testbundle' | id %}
+{% set fr_app_swift = 'ios:fileref:appswift' | id %}
+{% set fr_content_view = 'ios:fileref:contentview' | id %}
+{% set fr_greeter = 'ios:fileref:greeter' | id %}
+{% set fr_assets = 'ios:fileref:assets' | id %}
+{% set fr_info_plist = 'ios:fileref:infoplist' | id %}
+{% set fr_test_file = 'ios:fileref:testfile' | id %}
+{% set bf_app_swift = 'ios:buildfile:appswift' | id %}
+{% set bf_content_view = 'ios:buildfile:contentview' | id %}
+{% set bf_greeter = 'ios:buildfile:greeter' | id %}
+{% set bf_assets = 'ios:buildfile:assets' | id %}
+{% set bf_test_file = 'ios:buildfile:testfile' | id %}
+{% set sources_app = 'ios:phase:sources:app' | id %}
+{% set frameworks_app = 'ios:phase:frameworks:app' | id %}
+{% set resources_app = 'ios:phase:resources:app' | id %}
+{% set sources_tests = 'ios:phase:sources:tests' | id %}
+{% set frameworks_tests = 'ios:phase:frameworks:tests' | id %}
+{% set resources_tests = 'ios:phase:resources:tests' | id %}
+{% set target_app = 'ios:target:app' | id %}
+{% set target_tests = 'ios:target:tests' | id %}
+{% set dependency = 'ios:dependency:tests' | id %}
+{% set proxy = 'ios:proxy:tests' | id %}
+{% set cfglist_project = 'ios:cfglist:project' | id %}
+{% set cfglist_app = 'ios:cfglist:app' | id %}
+{% set cfglist_tests = 'ios:cfglist:tests' | id %}
+{% set cfg_project_debug = 'ios:cfg:project:debug' | id %}
+{% set cfg_project_release = 'ios:cfg:project:release' | id %}
+{% set cfg_app_debug = 'ios:cfg:app:debug' | id %}
+{% set cfg_app_release = 'ios:cfg:app:release' | id %}
+{% set cfg_tests_debug = 'ios:cfg:tests:debug' | id %}
+{% set cfg_tests_release = 'ios:cfg:tests:release' | id %}
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		{{ bf_app_swift }} /* {{ class_name }}App.swift in Sources */ = {isa = PBXBuildFile; fileRef = {{ fr_app_swift }} /* {{ class_name }}App.swift */; };
+		{{ bf_content_view }} /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = {{ fr_content_view }} /* ContentView.swift */; };
+		{{ bf_greeter }} /* Greeter.swift in Sources */ = {isa = PBXBuildFile; fileRef = {{ fr_greeter }} /* Greeter.swift */; };
+		{{ bf_assets }} /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = {{ fr_assets }} /* Assets.xcassets */; };
+		{{ bf_test_file }} /* {{ class_name }}Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = {{ fr_test_file }} /* {{ class_name }}Tests.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		{{ proxy }} /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = {{ project }} /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = {{ target_app }};
+			remoteInfo = "{{ class_name }}";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		{{ fr_app }} /* {{ class_name }}.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "{{ class_name }}.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		{{ fr_test_bundle }} /* {{ class_name }}Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "{{ class_name }}Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		{{ fr_app_swift }} /* {{ class_name }}App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "{{ class_name }}App.swift"; sourceTree = "<group>"; };
+		{{ fr_content_view }} /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		{{ fr_greeter }} /* Greeter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Greeter.swift; sourceTree = "<group>"; };
+		{{ fr_assets }} /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		{{ fr_info_plist }} /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		{{ fr_test_file }} /* {{ class_name }}Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "{{ class_name }}Tests.swift"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		{{ frameworks_app }} /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		{{ frameworks_tests }} /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		{{ main_group }} = {
+			isa = PBXGroup;
+			children = (
+				{{ app_group }} /* {{ class_name }} */,
+				{{ tests_group }} /* {{ class_name }}Tests */,
+				{{ products_group }} /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		{{ app_group }} /* {{ class_name }} */ = {
+			isa = PBXGroup;
+			children = (
+				{{ fr_app_swift }} /* {{ class_name }}App.swift */,
+				{{ fr_content_view }} /* ContentView.swift */,
+				{{ fr_greeter }} /* Greeter.swift */,
+				{{ fr_assets }} /* Assets.xcassets */,
+				{{ fr_info_plist }} /* Info.plist */,
+			);
+			path = "{{ class_name }}";
+			sourceTree = "<group>";
+		};
+		{{ tests_group }} /* {{ class_name }}Tests */ = {
+			isa = PBXGroup;
+			children = (
+				{{ fr_test_file }} /* {{ class_name }}Tests.swift */,
+			);
+			path = "{{ class_name }}Tests";
+			sourceTree = "<group>";
+		};
+		{{ products_group }} /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				{{ fr_app }} /* {{ class_name }}.app */,
+				{{ fr_test_bundle }} /* {{ class_name }}Tests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		{{ target_app }} /* {{ class_name }} */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = {{ cfglist_app }} /* Build configuration list for PBXNativeTarget "{{ class_name }}" */;
+			buildPhases = (
+				{{ sources_app }} /* Sources */,
+				{{ frameworks_app }} /* Frameworks */,
+				{{ resources_app }} /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "{{ class_name }}";
+			productName = "{{ class_name }}";
+			productReference = {{ fr_app }} /* {{ class_name }}.app */;
+			productType = "com.apple.product-type.application";
+		};
+		{{ target_tests }} /* {{ class_name }}Tests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = {{ cfglist_tests }} /* Build configuration list for PBXNativeTarget "{{ class_name }}Tests" */;
+			buildPhases = (
+				{{ sources_tests }} /* Sources */,
+				{{ frameworks_tests }} /* Frameworks */,
+				{{ resources_tests }} /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				{{ dependency }} /* PBXTargetDependency */,
+			);
+			name = "{{ class_name }}Tests";
+			productName = "{{ class_name }}Tests";
+			productReference = {{ fr_test_bundle }} /* {{ class_name }}Tests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		{{ project }} /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1500;
+				LastUpgradeCheck = 1500;
+				TargetAttributes = {
+					{{ target_app }} = {
+						CreatedOnToolsVersion = 15.0;
+					};
+					{{ target_tests }} = {
+						CreatedOnToolsVersion = 15.0;
+						TestTargetID = {{ target_app }};
+					};
+				};
+			};
+			buildConfigurationList = {{ cfglist_project }} /* Build configuration list for PBXProject "{{ class_name }}" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = {{ main_group }};
+			productRefGroup = {{ products_group }} /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				{{ target_app }} /* {{ class_name }} */,
+				{{ target_tests }} /* {{ class_name }}Tests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		{{ resources_app }} /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				{{ bf_assets }} /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		{{ resources_tests }} /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		{{ sources_app }} /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				{{ bf_app_swift }} /* {{ class_name }}App.swift in Sources */,
+				{{ bf_content_view }} /* ContentView.swift in Sources */,
+				{{ bf_greeter }} /* Greeter.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		{{ sources_tests }} /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				{{ bf_test_file }} /* {{ class_name }}Tests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		{{ dependency }} /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = {{ target_app }} /* {{ class_name }} */;
+			targetProxy = {{ proxy }} /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		{{ cfg_project_debug }} /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				IPHONEOS_DEPLOYMENT_TARGET = {{ ios_deployment_target }};
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		{{ cfg_project_release }} /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = {{ ios_deployment_target }};
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		{{ cfg_app_debug }} /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+{% if team_id %}
+				DEVELOPMENT_TEAM = {{ team_id }};
+{% endif %}
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = "{{ class_name }}/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = {{ version }};
+				PRODUCT_BUNDLE_IDENTIFIER = {{ bundle_id }};
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		{{ cfg_app_release }} /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+{% if team_id %}
+				DEVELOPMENT_TEAM = {{ team_id }};
+{% endif %}
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = "{{ class_name }}/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = {{ version }};
+				PRODUCT_BUNDLE_IDENTIFIER = {{ bundle_id }};
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		{{ cfg_tests_debug }} /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = {{ version }};
+				PRODUCT_BUNDLE_IDENTIFIER = "{{ bundle_id }}Tests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/{{ class_name }}.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/{{ class_name }}";
+			};
+			name = Debug;
+		};
+		{{ cfg_tests_release }} /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = {{ version }};
+				PRODUCT_BUNDLE_IDENTIFIER = "{{ bundle_id }}Tests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/{{ class_name }}.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/{{ class_name }}";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		{{ cfglist_project }} /* Build configuration list for PBXProject "{{ class_name }}" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				{{ cfg_project_debug }} /* Debug */,
+				{{ cfg_project_release }} /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		{{ cfglist_app }} /* Build configuration list for PBXNativeTarget "{{ class_name }}" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				{{ cfg_app_debug }} /* Debug */,
+				{{ cfg_app_release }} /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		{{ cfglist_tests }} /* Build configuration list for PBXNativeTarget "{{ class_name }}Tests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				{{ cfg_tests_debug }} /* Debug */,
+				{{ cfg_tests_release }} /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = {{ project }} /* Project object */;
+}

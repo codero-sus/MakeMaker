@@ -1,0 +1,21 @@
+# Build output
+/build/
+*.exe
+*.obj
+*.o
+*.res
+*.pdb
+*.ilk
+*.lib
+*.exp
+
+# Visual Studio
+.vs/
+*.vcxproj.user
+CMakeSettings.json
+out/
+
+# Editors
+.vscode/
+.idea/
+*.swp

@@ -1,0 +1,36 @@
+{
+  "id": "macos",
+  "display_name": "macOS Application",
+  "summary": "macOS app: C/C++ command line tool or an AppKit GUI in Objective-C",
+  "os": "macos",
+  "flavors": ["console", "gui"],
+  "default_flavor": "console",
+  "languages": ["c", "cpp", "objc"],
+  "default_language": "cpp",
+  "flavor_languages": {
+    "console": ["c", "cpp"],
+    "gui": ["objc"]
+  },
+  "variables": {
+    "app_name": {
+      "description": "Application name",
+      "default": "{{ project_name }}"
+    },
+    "app_summary": {
+      "description": "One line summary",
+      "default": "{{ description }}"
+    }
+  },
+  "requires": {
+    "console": ["clang", "make"],
+    "gui": ["clang", "make"]
+  },
+  "rules": [
+    { "path": "src/main.*", "when": "flavor != 'gui'" },
+    { "path": "src/gui.*", "when": "flavor == 'gui'" },
+    { "path": "tests/**", "when": "flavor != 'gui'" },
+    { "path": "CMakeLists.txt.tmpl", "when": "flavor != 'gui'" },
+    { "path": "Info.plist.tmpl", "when": "flavor == 'gui'" }
+  ],
+  "notes": "Builds with the Xcode command line tools (xcode-select --install).\nThe GUI flavour produces a real .app bundle that 'make run' opens."
+}

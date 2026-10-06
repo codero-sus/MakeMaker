@@ -1,0 +1,11 @@
+# Build output
+/build/
+*.o
+*.dSYM/
+*.app/
+
+# Xcode / editors
+xcuserdata/
+.vscode/
+.idea/
+*.swp

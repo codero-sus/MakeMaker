@@ -1,0 +1,13 @@
+# Build output
+/build/
+*.o
+*.obj
+*.a
+*.so
+*.dylib
+
+# Editors
+.vscode/
+.idea/
+*.swp
+compile_commands.json
