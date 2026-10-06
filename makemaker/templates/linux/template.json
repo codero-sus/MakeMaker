@@ -1,0 +1,30 @@
+{
+  "id": "linux",
+  "display_name": "Linux Application",
+  "summary": "Native Linux app in C or C++ with a Makefile, CMake config and test target",
+  "os": "linux",
+  "flavors": ["console", "gui"],
+  "default_flavor": "console",
+  "languages": ["c", "cpp"],
+  "default_language": "cpp",
+  "variables": {
+    "app_name": {
+      "description": "Application name",
+      "default": "{{ project_name }}"
+    },
+    "app_summary": {
+      "description": "One line summary",
+      "default": "{{ description }}"
+    }
+  },
+  "requires": {
+    "console": ["cc", "make"],
+    "gui": ["make", "pkg-config"]
+  },
+  "rules": [
+    { "path": "src/main.*", "when": "flavor != 'gui'" },
+    { "path": "src/gui.*", "when": "flavor == 'gui'" },
+    { "path": "tests/**", "when": "flavor != 'gui'" }
+  ],
+  "notes": "console builds and runs anywhere a C compiler and make exist.\nGUI builds need GTK 4 development headers (pkg-config --exists gtk4)."
+}

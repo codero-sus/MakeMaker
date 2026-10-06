@@ -1,0 +1,29 @@
+{
+  "id": "ios",
+  "display_name": "iOS App",
+  "summary": "SwiftUI iOS app with a generated Xcode project, shared scheme and XCTest target",
+  "os": "ios",
+  "flavors": ["gui"],
+  "default_flavor": "gui",
+  "languages": ["swift"],
+  "default_language": "swift",
+  "variables": {
+    "app_name": {
+      "description": "Application name",
+      "default": "{{ project_name }}"
+    },
+    "app_summary": {
+      "description": "One line summary",
+      "default": "{{ description }}"
+    },
+    "team_id": {
+      "description": "Apple developer team id (leave empty for simulator builds)",
+      "default": ""
+    }
+  },
+  "requires": {
+    "*": ["xcodebuild"]
+  },
+  "rules": [],
+  "notes": "macOS with Xcode 15+ required. The .xcodeproj (including a shared scheme)\nis generated, so 'xcodebuild -scheme ...' works without opening Xcode first.\nSimulator builds need no code signing; device builds need --set team_id=XXXXXXXXXX."
+}

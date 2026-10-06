@@ -1,0 +1,39 @@
+{
+  "id": "android",
+  "display_name": "Android App",
+  "summary": "Kotlin Android app with Gradle (Kotlin DSL), Material 3 UI and JUnit tests",
+  "os": "android",
+  "flavors": ["gui"],
+  "default_flavor": "gui",
+  "languages": ["kotlin"],
+  "default_language": "kotlin",
+  "variables": {
+    "app_name": {
+      "description": "Application name",
+      "default": "{{ project_name }}"
+    },
+    "app_summary": {
+      "description": "One line summary",
+      "default": "{{ description }}"
+    },
+    "gradle_version": {
+      "description": "Gradle distribution the wrapper bootstraps",
+      "default": "8.7"
+    },
+    "agp_version": {
+      "description": "Android Gradle Plugin version",
+      "default": "8.5.2"
+    },
+    "kotlin_version": {
+      "description": "Kotlin plugin version",
+      "default": "1.9.24"
+    }
+  },
+  "requires": {
+    "*": ["java"]
+  },
+  "rules": [
+    { "path": "gradlew.tmpl", "executable": true, "mode": 493 }
+  ],
+  "notes": "Needs a JDK 17+ on PATH. gradlew bootstraps the Gradle version set by --set gradle_version=...\non first run (downloaded into .gradle-dist/), or it uses a Gradle already on PATH.\nBuild: ./gradlew assembleDebug  |  Install: ./gradlew installDebug"
+}

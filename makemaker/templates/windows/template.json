@@ -1,0 +1,41 @@
+{
+  "id": "windows",
+  "display_name": "Windows Application",
+  "summary": "Win32 app in C++ (or a C/C++ console tool) with CMake and a MinGW Makefile",
+  "os": "windows",
+  "flavors": ["console", "gui"],
+  "default_flavor": "console",
+  "languages": ["c", "cpp"],
+  "default_language": "cpp",
+  "flavor_languages": {
+    "console": ["c", "cpp"],
+    "gui": ["cpp"]
+  },
+  "variables": {
+    "app_name": {
+      "description": "Application name",
+      "default": "{{ project_name }}"
+    },
+    "app_summary": {
+      "description": "One line summary",
+      "default": "{{ description }}"
+    },
+    "company": {
+      "description": "Company / publisher name",
+      "default": "{{ organization }}"
+    }
+  },
+  "requires": {
+    "console": ["cmake"],
+    "gui": ["cmake"]
+  },
+  "rules": [
+    { "path": "src/main.*", "when": "flavor != 'gui'" },
+    { "path": "src/winmain.*", "when": "flavor == 'gui'" },
+    { "path": "src/app.rc.tmpl", "when": "flavor == 'gui'" },
+    { "path": "src/resource.h.tmpl", "when": "flavor == 'gui'" },
+    { "path": "src/{{ class_name }}.manifest.tmpl", "when": "flavor == 'gui'" },
+    { "path": "tests/**", "when": "flavor != 'gui'" }
+  ],
+  "notes": "Build with Visual Studio 2022 ('Developer Command Prompt') or MinGW-w64.\nCMake drives both; the included Makefile is for MinGW's mingw32-make."
+}

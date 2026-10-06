@@ -1,0 +1,20 @@
+# Gradle
+.gradle/
+.gradle-dist/
+build/
+local.properties
+
+# Android Studio / IntelliJ
+.idea/
+*.iml
+captures/
+.externalNativeBuild/
+.cxx/
+
+# Signing
+*.jks
+*.keystore
+
+# Editors
+.vscode/
+*.swp
