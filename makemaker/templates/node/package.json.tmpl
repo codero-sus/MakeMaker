@@ -1,0 +1,25 @@
+{
+  "name": "{{ slug }}",
+  "version": "{{ version }}",
+  "description": "{{ app_summary }}",
+  "type": "module",
+  "main": "src/index.{{ source_ext }}",
+  "bin": {
+    "{{ identifier }}": "src/index.{{ source_ext }}"
+  },
+  "scripts": {
+    "start": "node src/index.{{ source_ext }}",
+    "test": "node --test"
+  },
+  "keywords": [],
+  "license": "MIT",
+  "author": "{{ author }}",
+  "engines": {
+{% if is_typescript %}
+    "node": ">=22.6.0"
+{% else %}
+    "node": ">=18.0.0"
+{% endif %}
+  },
+  "private": true
+}

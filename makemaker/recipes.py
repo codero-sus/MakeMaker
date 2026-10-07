@@ -64,6 +64,49 @@ def build_commands(template: TemplateDef, context: Dict[str, Any]) -> Dict[str, 
             "clean": [["./gradlew", "clean"]],
         }
 
+    if target == "python":
+        return {
+            "build": [["make", "lint"]],
+            "test": [["make", "test"]],
+            "run": [["make", "run"]],
+            "clean": [["make", "clean"]],
+            "install": [["make", "install"]],
+        }
+
+    if target == "node":
+        extension = "ts" if str(context.get("language")) == "typescript" else "js"
+        entry = f"src/index.{extension}"
+        return {
+            "build": [["node", "--check", entry]],
+            "test": [["node", "--test"]],
+            "run": [["node", entry]],
+        }
+
+    if target == "rust":
+        return {
+            "build": [["cargo", "build"]],
+            "test": [["cargo", "test"]],
+            "run": [["cargo", "run"]],
+            "clean": [["cargo", "clean"]],
+        }
+
+    if target == "go":
+        return {
+            "build": [["go", "build", "-o", f"build/{bin_name}", "."]],
+            "test": [["go", "test", "./..."]],
+            "run": [["go", "run", "."]],
+            "clean": [["go", "clean"]],
+        }
+
+    if target == "dotnet":
+        solution = f"{class_name}.sln"
+        return {
+            "build": [["dotnet", "build", solution, "-c", "Release"]],
+            "test": [["dotnet", "test", solution, "-c", "Release"]],
+            "run": [["dotnet", "run", "--project", f"src/{class_name}"]],
+            "clean": [["dotnet", "clean", solution]],
+        }
+
     if target == "ios":
         project = f"{class_name}.xcodeproj"
         return {

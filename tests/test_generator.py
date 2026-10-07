@@ -44,6 +44,36 @@ EXPECTED_FILES = {
         "app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml",
         "app/src/test/java/com/example/apptest/GreeterTest.kt",
     },
+    ("macos", "console", "swift"): {
+        "Makefile", "README.md", "src/app.swift", "src/main.swift",
+        "tests/test_app.swift",
+    },
+    ("python", "console", "python"): {
+        "Makefile", "pyproject.toml", "README.md", ".gitignore",
+        "src/app_test/__init__.py", "src/app_test/core.py",
+        "src/app_test/cli.py", "src/app_test/__main__.py",
+        "tests/test_core.py",
+    },
+    ("node", "console", "typescript"): {
+        "package.json", "tsconfig.json", "src/greeter.ts", "src/index.ts",
+        "test/greeter.test.ts",
+    },
+    ("node", "console", "javascript"): {
+        "package.json", "src/greeter.js", "src/index.js", "test/greeter.test.js",
+    },
+    ("rust", "console", "rust"): {
+        "Cargo.toml", "README.md", "src/lib.rs", "src/main.rs", "tests/greeter.rs",
+    },
+    ("go", "console", "go"): {
+        "go.mod", "Makefile", "main.go", "greeter.go", "greeter_test.go",
+    },
+    ("dotnet", "console", "csharp"): {
+        "AppTest.sln",
+        "src/AppTest/AppTest.csproj", "src/AppTest/Program.cs",
+        "src/AppTest/Greeter.cs",
+        "tests/AppTest.Tests/AppTest.Tests.csproj",
+        "tests/AppTest.Tests/GreeterTests.cs",
+    },
     ("ios", "gui", "swift"): {
         "Makefile", "AppTest/AppTestApp.swift", "AppTest/ContentView.swift",
         "AppTest/Greeter.swift", "AppTest/Info.plist",
@@ -105,6 +135,29 @@ class GenerationTests(unittest.TestCase):
         self.assertNotIn("src/main.c", gui_files)
         self.assertTrue((console_dir / "tests").is_dir())
         self.assertFalse((gui_dir / "tests").exists())
+
+    def test_macos_swift_does_not_drag_in_c_artefacts(self):
+        template = self.registry.get("macos")
+        context = make_context(template, "console", "swift")
+        produced = {item.rel_path for item in plan_files(template, context)}
+        self.assertIn("src/main.swift", produced)
+        self.assertIn("src/app.swift", produced)
+        self.assertNotIn("src/app.h", produced, "a C header has no place in a Swift target")
+        self.assertNotIn("CMakeLists.txt", produced, "swiftc does not use CMake here")
+        # ...while the C flavour still gets both
+        c_context = make_context(template, "console", "c")
+        c_produced = {item.rel_path for item in plan_files(template, c_context)}
+        self.assertIn("src/app.h", c_produced)
+        self.assertIn("CMakeLists.txt", c_produced)
+
+    def test_node_typescript_only_ships_a_tsconfig(self):
+        template = self.registry.get("node")
+        typescript = {item.rel_path for item in plan_files(
+            template, make_context(template, "console", "typescript"))}
+        javascript = {item.rel_path for item in plan_files(
+            template, make_context(template, "console", "javascript"))}
+        self.assertIn("tsconfig.json", typescript)
+        self.assertNotIn("tsconfig.json", javascript)
 
     # -- rendering ------------------------------------------------------
     def test_no_template_syntax_survives_into_generated_files(self):

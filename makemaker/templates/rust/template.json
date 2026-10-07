@@ -1,0 +1,29 @@
+{
+  "id": "rust",
+  "display_name": "Rust CLI",
+  "summary": "Cargo project with a library, a binary and both unit and integration tests",
+  "os": "rust",
+  "flavors": ["console"],
+  "default_flavor": "console",
+  "languages": ["rust"],
+  "default_language": "rust",
+  "variables": {
+    "app_name": {
+      "description": "Application name",
+      "default": "{{ project_name }}"
+    },
+    "app_summary": {
+      "description": "One line summary",
+      "default": "{{ description }}"
+    },
+    "rust_edition": {
+      "description": "Rust edition",
+      "default": "2021"
+    }
+  },
+  "requires": {
+    "*": ["cargo"]
+  },
+  "rules": [],
+  "notes": "Needs the Rust toolchain (https://rustup.rs). No crates are referenced, so\n'cargo build' and 'cargo test' work offline on a clean checkout."
+}

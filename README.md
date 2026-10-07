@@ -64,16 +64,27 @@ Projects are written to `<--out>/<slug>` (default `--out .`). Passing several
 
 ## Targets
 
+Ten templates, eleven languages:
+
 | Target    | Flavours          | Languages       | What you get |
 |-----------|-------------------|-----------------|--------------|
 | `android` | gui               | kotlin          | Gradle (Kotlin DSL) app, Material 3 UI, adaptive icon, JUnit tests, dependency-free `gradlew` |
 | `ios`     | gui               | swift           | SwiftUI app, generated `.xcodeproj` **with a shared scheme**, XCTest target, `xcodebuild`/`simctl` Makefile |
 | `windows` | console, gui      | c, cpp (gui: cpp) | Win32 window class + message loop, `.rc` version info, embedded DPI-aware manifest, CMake + MinGW Makefile |
-| `macos`   | console, gui      | c, cpp (gui: objc) | Command line tool, or an AppKit/ARC app that builds into a real `.app` bundle |
+| `macos`   | console, gui      | c, cpp, swift (gui: objc) | Command line tool in C, C++ or Swift, or an AppKit/ARC app that builds into a real `.app` bundle |
 | `linux`   | console, gui      | c, cpp          | Makefile + CMake, unit test target; GUI flavour uses GTK 4 |
+| `python`  | console           | python          | src-layout package, argparse CLI, `unittest` suite, `pyproject.toml` with a console script |
+| `node`    | console           | typescript, javascript | Zero-dependency ESM CLI using the built-in `node:test` runner; TypeScript runs with no build step |
+| `rust`    | console           | rust            | Cargo lib + bin of the same name, unit tests in `src/lib.rs`, integration tests in `tests/` |
+| `go`      | console           | go              | Go module, table-driven tests, Makefile with `fmt`/`vet` targets |
+| `dotnet`  | console           | csharp          | Solution with a console app and an xUnit test project, top-level statements entry point |
 
 Every project also gets a `.gitignore`, a `README.md` describing its own build,
 and `.makemaker/project.json` recording how it was made.
+
+Those ten templates expand to **19 reachable flavour/language combinations**.
+`makemaker template check` renders all 19; add `--all` to also render the 5
+combinations the CLI would reject.
 
 Flavour/language combinations that cannot work are rejected rather than
 half-generated -- `--flavor gui --lang cpp` on macOS tells you the GUI flavour
@@ -118,7 +129,7 @@ makemaker/
 native/
 ├── mknative.c       C11: toolchain probe, JSON reader, build driver
 └── Makefile
-tests/               150 unittest cases, standard library only
+tests/               164 unittest cases, standard library only
 ```
 
 ### The template engine
@@ -197,29 +208,39 @@ fails loudly instead of silently doing nothing.
 python3 -m unittest discover -s tests -t . -v
 ```
 
-150 tests, standard library only. They cover the engine (substitution,
+164 tests, standard library only. They cover the engine (substitution,
 expressions, filters, blocks, whitespace control, error positions), name and
 package derivation, registry validation, generation of **every** template in
-**every** flavour/language combination, and the Xcode project's internal
-reference integrity. The native tests compile `mknative.c` with `-Werror`, then
-use it to build, test, run and clean a generated C project with the real
-compiler.
+**every** reachable flavour/language combination, and the Xcode project's
+internal reference integrity.
+
+Some tests go further and *run* what was generated:
+
+* `tests/test_native.py` compiles `mknative.c` with `-Werror`, then uses it to
+  build, test, run and clean a generated C project with the real compiler.
+* `tests/test_generated_projects.py` runs `make test`/`make run` on a generated
+  Python package and `node --test` on generated Node projects in **both**
+  JavaScript and TypeScript, asserting the CLIs actually print the expected
+  output. Each of these skips itself when its toolchain is absent.
 
 ## What is verified here, and what is not
 
-Verified on Linux (gcc 12, GNU Make 4.3, Python 3.11):
+Verified on Linux (gcc 12, GNU Make 4.3, Python 3.11, Node 22):
 
 * Linux console projects in C and C++ build, run and pass their tests.
+* Generated **Python** packages pass `make test`, `make lint`, and run.
+* Generated **Node** projects pass `node --test` and run, in both TypeScript
+  (native type stripping, no build step) and JavaScript.
 * `mknative` compiles warning-free and drives those builds end to end.
-* All five targets generate; no template syntax survives into any output file.
+* All ten targets generate; no template syntax survives into any output file.
 * The generated `.pbxproj` is internally consistent (every object id defined,
   root object present, balanced delimiters, scheme pointing at real targets).
 
 **Not** verified, because the sandbox has no Android SDK, JDK, Gradle, Xcode,
-Windows or GTK: that the Android, iOS, Windows and macOS projects compile, and
-that the Linux GTK 4 GUI builds. Those templates are conventional and
-structurally checked, but treat the first build as the real test and report
-anything that does not line up.
+Windows, GTK, Rust, Go or .NET SDK: that the Android, iOS, Windows, macOS,
+Rust, Go and .NET projects compile, and that the Linux GTK 4 GUI builds. Those
+templates are conventional and structurally checked, but treat the first build
+as the real test and report anything that does not line up.
 
 ## License
 

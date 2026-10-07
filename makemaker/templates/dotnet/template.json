@@ -1,0 +1,29 @@
+{
+  "id": "dotnet",
+  "display_name": ".NET App",
+  "summary": "C# solution with a console app and an xUnit test project",
+  "os": "dotnet",
+  "flavors": ["console"],
+  "default_flavor": "console",
+  "languages": ["csharp"],
+  "default_language": "csharp",
+  "variables": {
+    "app_name": {
+      "description": "Application name",
+      "default": "{{ project_name }}"
+    },
+    "app_summary": {
+      "description": "One line summary",
+      "default": "{{ description }}"
+    },
+    "target_framework": {
+      "description": "Target framework moniker",
+      "default": "net8.0"
+    }
+  },
+  "requires": {
+    "*": ["dotnet"]
+  },
+  "rules": [],
+  "notes": "Needs the .NET 8 SDK (dotnet.microsoft.com/download). 'dotnet build' works offline;\n'dotnet test' restores xUnit from NuGet on first run, which needs network access."
+}

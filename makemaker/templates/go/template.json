@@ -1,0 +1,29 @@
+{
+  "id": "go",
+  "display_name": "Go CLI",
+  "summary": "Go module with a CLI, table-driven tests and a Makefile",
+  "os": "go",
+  "flavors": ["console"],
+  "default_flavor": "console",
+  "languages": ["go"],
+  "default_language": "go",
+  "variables": {
+    "app_name": {
+      "description": "Application name",
+      "default": "{{ project_name }}"
+    },
+    "app_summary": {
+      "description": "One line summary",
+      "default": "{{ description }}"
+    },
+    "go_version": {
+      "description": "Minimum Go version for go.mod",
+      "default": "1.22"
+    }
+  },
+  "requires": {
+    "*": ["go"]
+  },
+  "rules": [],
+  "notes": "Needs the Go toolchain (go.dev/doc/install). The module has no dependencies,\nso 'go build' and 'go test ./...' work offline on a clean checkout."
+}

@@ -51,7 +51,7 @@ class RecipeShapeTests(unittest.TestCase):
                             f"{where}:{action} -> {command!r} contains a non-string",
                         )
                     checked += 1
-        self.assertGreater(checked, 15, "suspiciously few recipes checked")
+        self.assertGreater(checked, 40, "suspiciously few recipes checked")
 
     def test_every_template_can_build(self):
         for _template, _flavor, _language, commands in self.every_recipe():
@@ -88,6 +88,49 @@ class RecipeShapeTests(unittest.TestCase):
         )
         self.assertEqual(ios["build"][0][0], "xcodebuild")
         self.assertIn("-scheme", ios["build"][0])
+
+    def test_interpreted_targets_use_their_own_runners(self):
+        python = build_commands(
+            self.registry.get("python"),
+            build_variables("App", target="python", flavor="console", language="python"),
+        )
+        self.assertEqual(python["test"], [["make", "test"]])
+        self.assertEqual(python["run"], [["make", "run"]])
+
+        node = build_commands(
+            self.registry.get("node"),
+            build_variables("App", target="node", flavor="console", language="typescript"),
+        )
+        self.assertEqual(node["test"], [["node", "--test"]])
+        self.assertEqual(node["run"], [["node", "src/index.ts"]])
+
+        js = build_commands(
+            self.registry.get("node"),
+            build_variables("App", target="node", flavor="console", language="javascript"),
+        )
+        self.assertEqual(js["run"], [["node", "src/index.js"]])
+
+    def test_compiled_targets_use_their_toolchains(self):
+        rust = build_commands(
+            self.registry.get("rust"),
+            build_variables("App", target="rust", flavor="console", language="rust"),
+        )
+        self.assertEqual(rust["build"], [["cargo", "build"]])
+        self.assertEqual(rust["test"], [["cargo", "test"]])
+
+        go = build_commands(
+            self.registry.get("go"),
+            build_variables("App", target="go", flavor="console", language="go"),
+        )
+        self.assertEqual(go["test"], [["go", "test", "./..."]])
+        self.assertEqual(go["build"][0][:3], ["go", "build", "-o"])
+
+        dotnet = build_commands(
+            self.registry.get("dotnet"),
+            build_variables("App", target="dotnet", flavor="console", language="csharp"),
+        )
+        self.assertEqual(dotnet["build"], [["dotnet", "build", "App.sln", "-c", "Release"]])
+        self.assertEqual(dotnet["test"], [["dotnet", "test", "App.sln", "-c", "Release"]])
 
     def test_windows_build_configures_then_builds(self):
         windows = build_commands(

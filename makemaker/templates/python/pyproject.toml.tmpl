@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "{{ slug }}"
+version = "{{ version }}"
+description = "{{ app_summary }}"
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+authors = [{ name = "{{ author }}" }]
+
+# {{ app_name }} has no runtime dependencies: the standard library is enough.
+dependencies = []
+
+[project.scripts]
+{{ identifier }} = "{{ identifier }}.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
