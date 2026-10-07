@@ -1,0 +1,19 @@
+# Dependencies (this project has none, but if you add any)
+node_modules/
+
+# Build output
+dist/
+build/
+*.tsbuildinfo
+
+# Logs and caches
+npm-debug.log*
+.npm/
+.cache/
+coverage/
+
+# Editors
+.vscode/
+.idea/
+*.swp
+.DS_Store

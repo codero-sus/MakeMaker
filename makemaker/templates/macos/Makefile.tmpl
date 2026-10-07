@@ -59,6 +59,47 @@ help:
 	@echo "  make codesign   ad-hoc sign the bundle"
 	@echo "  make install    copy into /Applications"
 	@echo "  make clean      remove $(BUILDDIR)"
+{% elif is_swift %}
+
+SWIFTC     ?= swiftc
+TESTDIR    := tests
+OPT        ?= -O
+
+SOURCES      := $(wildcard $(SRCDIR)/*.swift)
+LIB_SOURCES  := $(filter-out $(SRCDIR)/main.swift,$(SOURCES))
+TEST_SOURCES := $(wildcard $(TESTDIR)/*.swift)
+
+.PHONY: all run test clean install help
+.DELETE_ON_ERROR:
+
+all: $(BUILDDIR)/$(APP)
+
+$(BUILDDIR)/$(APP): $(SOURCES)
+	@mkdir -p $(BUILDDIR)
+	$(SWIFTC) $(OPT) $(SOURCES) -o $@
+
+run: all
+	./$(BUILDDIR)/$(APP)
+
+test: $(LIB_SOURCES) $(TEST_SOURCES)
+	@mkdir -p $(BUILDDIR)
+	$(SWIFTC) $(LIB_SOURCES) $(TEST_SOURCES) -o $(BUILDDIR)/test_$(APP)
+	./$(BUILDDIR)/test_$(APP)
+
+install: all
+	install -d $(DESTDIR)$(PREFIX)/bin
+	install -m 0755 $(BUILDDIR)/$(APP) $(DESTDIR)$(PREFIX)/bin/$(APP)
+
+clean:
+	rm -rf $(BUILDDIR)
+
+help:
+	@echo "{{ app_name }} -- available targets"
+	@echo "  make            build $(BUILDDIR)/$(APP)"
+	@echo "  make run        build and run"
+	@echo "  make test       build and run the tests"
+	@echo "  make install    install into $(PREFIX)/bin"
+	@echo "  make clean      remove $(BUILDDIR)"
 {% else %}
 
 {% if is_c %}

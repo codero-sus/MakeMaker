@@ -47,7 +47,8 @@ class BasicCommandTests(unittest.TestCase):
     def test_list_shows_all_targets(self):
         code, out, _ = run_cli("list")
         self.assertEqual(code, EXIT_OK)
-        for target in ("android", "ios", "linux", "macos", "windows"):
+        for target in ("android", "dotnet", "go", "ios", "linux",
+                       "macos", "node", "python", "rust", "windows"):
             self.assertIn(target, out)
 
     def test_list_json_is_parseable(self):
@@ -55,7 +56,8 @@ class BasicCommandTests(unittest.TestCase):
         self.assertEqual(code, EXIT_OK)
         payload = json.loads(out)
         self.assertEqual({item["id"] for item in payload},
-                         {"android", "ios", "linux", "macos", "windows"})
+                         {"android", "dotnet", "go", "ios", "linux",
+                          "macos", "node", "python", "rust", "windows"})
 
     def test_info_lists_files(self):
         code, out, _ = run_cli("info", "linux")
@@ -83,8 +85,8 @@ class BasicCommandTests(unittest.TestCase):
     def test_template_check_counts_only_reachable_combinations(self):
         """The headline number must match what `makemaker new` can generate.
 
-        5 templates expand to 12 reachable flavour/language combinations;
-        the raw cross product is 16, four of which the CLI rejects.
+        10 templates expand to 19 reachable flavour/language combinations;
+        the raw cross product is 24, five of which the CLI rejects.
         """
         from makemaker.registry import load_registry
 
@@ -98,8 +100,8 @@ class BasicCommandTests(unittest.TestCase):
             len(template.flavors or [""]) * len(template.languages or [""])
             for template in registry.sorted()
         )
-        self.assertEqual(reachable, 12)
-        self.assertGreater(cross_product, reachable)
+        self.assertEqual(reachable, 19)
+        self.assertEqual(cross_product, 24)
 
         code, out, _ = run_cli("template", "check")
         self.assertEqual(code, EXIT_OK, out)

@@ -1,0 +1,34 @@
+{% set csharp_type = '{9A19103F-16F7-4668-BE54-9A1E7A4F7556}' %}
+{% set app_guid = '{' + (project_guid | upper) + '}' %}
+{% set test_guid = '{' + (('dotnet:test:' + slug) | guid | upper) + '}' %}
+{% set solution_guid = '{' + (upgrade_guid | upper) + '}' %}
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34330.188
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{{ csharp_type }}") = "{{ class_name }}", "src\{{ class_name }}\{{ class_name }}.csproj", "{{ app_guid }}"
+EndProject
+Project("{{ csharp_type }}") = "{{ class_name }}.Tests", "tests\{{ class_name }}.Tests\{{ class_name }}.Tests.csproj", "{{ test_guid }}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{{ app_guid }}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{{ app_guid }}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{{ app_guid }}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{{ app_guid }}.Release|Any CPU.Build.0 = Release|Any CPU
+		{{ test_guid }}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{{ test_guid }}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{{ test_guid }}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{{ test_guid }}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {{ solution_guid }}
+	EndGlobalSection
+EndGlobal

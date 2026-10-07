@@ -1,0 +1,27 @@
+{
+  "id": "node",
+  "display_name": "Node.js CLI",
+  "summary": "Dependency-free Node CLI in JavaScript or TypeScript using the built-in test runner",
+  "os": "node",
+  "flavors": ["console"],
+  "default_flavor": "console",
+  "languages": ["javascript", "typescript"],
+  "default_language": "typescript",
+  "variables": {
+    "app_name": {
+      "description": "Application name",
+      "default": "{{ project_name }}"
+    },
+    "app_summary": {
+      "description": "One line summary",
+      "default": "{{ description }}"
+    }
+  },
+  "requires": {
+    "*": ["node"]
+  },
+  "rules": [
+    { "path": "tsconfig.json.tmpl", "when": "language == 'typescript'" }
+  ],
+  "notes": "Zero dependencies: tests use the built-in 'node:test' runner.\nThe TypeScript flavour relies on Node's native type stripping, so it needs Node 22.6+\n(22.18+ strips types without a flag) and requires no build step."
+}

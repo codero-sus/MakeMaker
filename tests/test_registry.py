@@ -7,7 +7,10 @@ import unittest
 from makemaker.engine import TemplateError
 from makemaker.registry import load_registry, rule_matches, template_root
 
-EXPECTED_TARGETS = {"android", "ios", "linux", "macos", "windows"}
+EXPECTED_TARGETS = {
+    "android", "dotnet", "go", "ios", "linux",
+    "macos", "node", "python", "rust", "windows",
+}
 
 
 class RegistryTests(unittest.TestCase):
@@ -15,8 +18,20 @@ class RegistryTests(unittest.TestCase):
     def setUpClass(cls):
         cls.registry = load_registry()
 
-    def test_all_five_platforms_are_bundled(self):
+    def test_every_expected_template_is_bundled(self):
         self.assertEqual(set(self.registry.ids()), EXPECTED_TARGETS)
+        self.assertEqual(len(self.registry), 10)
+
+    def test_every_language_is_spelled_consistently(self):
+        """source_ext must know about every language any template offers."""
+        from makemaker.variables import _SOURCE_EXT
+
+        for template in self.registry.sorted():
+            for language in template.languages:
+                self.assertIn(
+                    language, _SOURCE_EXT,
+                    f"{template.id} offers {language!r} but _SOURCE_EXT has no entry",
+                )
 
     def test_template_root_exists(self):
         self.assertTrue(template_root().is_dir())
@@ -63,6 +78,10 @@ class RegistryTests(unittest.TestCase):
         self.assertEqual(template.language(None, "console"), "cpp")
         with self.assertRaises(TemplateError):
             template.language("cpp", "gui")
+
+    def test_macos_console_accepts_swift(self):
+        template = self.registry.get("macos")
+        self.assertEqual(template.language("swift", "console"), "swift")
 
     def test_windows_gui_only_accepts_cpp(self):
         template = self.registry.get("windows")

@@ -92,6 +92,12 @@ _SOURCE_EXT = {
     "swift": "swift",
     "kotlin": "kt",
     "java": "java",
+    "python": "py",
+    "javascript": "js",
+    "typescript": "ts",
+    "rust": "rs",
+    "go": "go",
+    "csharp": "cs",
 }
 
 
@@ -188,6 +194,12 @@ def build_variables(
         "is_swift": language == "swift",
         "is_kotlin": language == "kotlin",
         "is_c_family": language in ("c", "cpp", "objc"),
+        "is_python": language == "python",
+        "is_javascript": language == "javascript",
+        "is_typescript": language == "typescript",
+        "is_rust": language == "rust",
+        "is_go": language == "go",
+        "is_csharp": language == "csharp",
         "source_ext": _SOURCE_EXT.get(language, "c"),
         "header_ext": "h",
         # toolchain knobs

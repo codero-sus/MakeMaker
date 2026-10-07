@@ -1,0 +1,25 @@
+{
+  "id": "python",
+  "display_name": "Python Package",
+  "summary": "Cross-platform Python CLI with a src layout, unittest tests and a Makefile",
+  "os": "python",
+  "flavors": ["console"],
+  "default_flavor": "console",
+  "languages": ["python"],
+  "default_language": "python",
+  "variables": {
+    "app_name": {
+      "description": "Application name",
+      "default": "{{ project_name }}"
+    },
+    "app_summary": {
+      "description": "One line summary",
+      "default": "{{ description }}"
+    }
+  },
+  "requires": {
+    "*": ["python3"]
+  },
+  "rules": [],
+  "notes": "Standard library only: tests use unittest, so 'make test' works on a bare Python 3.9+.\nThe package lives in src/<module>/ and is importable without installing (make sets PYTHONPATH)."
+}

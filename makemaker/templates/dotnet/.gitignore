@@ -1,0 +1,23 @@
+# Build output
+bin/
+obj/
+[Dd]ebug/
+[Rr]elease/
+artifacts/
+*.user
+
+# Visual Studio / Rider
+.vs/
+.idea/
+*.suo
+*.DotSettings.user
+
+# Test results
+TestResults/
+*.trx
+coverage*.xml
+
+# Editors
+.vscode/
+*.swp
+.DS_Store
