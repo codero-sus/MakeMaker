@@ -101,6 +101,7 @@ is Objective-C.
 | `makemaker build\|run\|test\|clean PROJECT` | run the recorded recipe |
 | `makemaker native build\|doctor\|path` | manage the C companion |
 | `makemaker template check [--all]` | render every reachable template combination (template authoring) |
+| `makemaker template validate [-t ID] [--json]` | static checks: dead rules, `template.json` key typos, output-path collisions |
 | `makemaker version [--json]` | versions |
 
 Useful flags for `new`: `--out DIR`, `--set key=value`, `--force`, `--dry-run`,
@@ -129,7 +130,7 @@ makemaker/
 native/
 ├── mknative.c       C11: toolchain probe, JSON reader, build driver
 └── Makefile
-tests/               164 unittest cases, standard library only
+tests/               214 unittest cases, standard library only
 ```
 
 ### The template engine
@@ -141,6 +142,7 @@ Familiar syntax, deliberately strict about mistakes:
 {% set id = 'object:main' | id %}          {# stable 24-hex id #}
 {% if language == 'cpp' %} ... {% elif ... %} ... {% else %} ... {% endif %}
 {% for src in sources %}{{ loop.index }}: {{ src }}{% endfor %}
+{% raw %}{{ this is emitted literally }}{% endraw %}
 {# a comment #}
 ```
 
@@ -151,7 +153,8 @@ Familiar syntax, deliberately strict about mistakes:
 * Block tags on their own line leave no blank line behind, so generated code
   keeps its indentation.
 * Filters: `upper lower capitalize title trim pascal camel snake kebab slug
-  screaming dot identifier quote json replace default trim_end length id guid`.
+  screaming dot identifier quote json replace default trim_end length id guid
+  join`.
 * `{{` is the only special sequence -- `${...}` (Gradle, Kotlin, Swift, CMake)
   and lone braces pass through untouched.
 
@@ -160,7 +163,9 @@ File and directory names are templated too, so
 `app/src/main/java/{{ package_path }}/MainActivity.kt.tmpl` becomes the right
 Java tree. Files ending in `.tmpl` are rendered; everything else is copied
 byte for byte. A rendered path that tries to escape the destination is
-rejected.
+rejected. Generated `.bat`, `.cmd` and `.sln` files are written with CRLF line endings
+because Windows tooling expects it; every other file, including POSIX shell
+scripts such as `gradlew`, stays LF.
 
 ### Template metadata
 
@@ -208,11 +213,14 @@ fails loudly instead of silently doing nothing.
 python3 -m unittest discover -s tests -t . -v
 ```
 
-164 tests, standard library only. They cover the engine (substitution,
-expressions, filters, blocks, whitespace control, error positions), name and
-package derivation, registry validation, generation of **every** template in
-**every** reachable flavour/language combination, and the Xcode project's
-internal reference integrity.
+214 tests, standard library only. They cover the engine (substitution,
+expressions, filters, blocks, `{% raw %}`, the bounded compile cache,
+whitespace control, error positions), name and package derivation, registry
+validation, line-ending policy, generation of **every** template in **every**
+reachable flavour/language combination, the Xcode project's internal
+reference integrity, and the static template validator -- including a broken
+template for each check, so a linter that stopped finding problems would fail
+the suite.
 
 Some tests go further and *run* what was generated:
 

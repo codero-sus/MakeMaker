@@ -9,6 +9,7 @@ language to render source trees:
     {{ a or 'fallback' }}          expressions
     {% if lang == 'cpp' %} ... {% else %} ... {% endif %}
     {% for src in sources %} ... {% endfor %}
+    {% raw %} ... {% endraw %}   emitted verbatim; tags inside are ignored
     {# a comment #}
 
 Whitespace control works the way you would expect from a code generator:
@@ -28,6 +29,7 @@ import json
 import re
 import shlex
 import uuid
+from collections import OrderedDict
 from dataclasses import dataclass, field
 from typing import Any, Callable, Dict, Iterable, List, Optional, Sequence, Tuple
 
@@ -44,6 +46,7 @@ __all__ = [
     "case_screaming",
     "stable_id",
     "stable_guid",
+    "cache_info",
 ]
 
 
@@ -181,6 +184,7 @@ FILTERS: Dict[str, Callable[..., Any]] = {
     "default": _f_default,
     "trim_end": _f_trim_end,
     "length": lambda v: len(v),
+    "join": lambda v, separator="": separator.join(str(item) for item in v),
     "id": stable_id,
     "guid": stable_guid,
 }
@@ -602,6 +606,9 @@ class _TNode:
 
 _BLOCK_END = {"endif", "endfor", "else", "elif"}
 
+#: Closing tag for a {% raw %} block, tolerating whitespace-control markers.
+_ENDRAW_RE = re.compile(r"\{%-?\s*endraw\s*-?%\}")
+
 
 def _find_tag(source: str, start: int) -> Tuple[int, str]:
     best = (-1, "")
@@ -680,6 +687,18 @@ def _tokenize(source: str) -> List[_TNode]:
             continue
 
         keyword, rest = _parse_block(source, body, idx)
+        if keyword == "raw":
+            match = _ENDRAW_RE.search(source, end + 2)
+            if match is None:
+                raise TemplateError(
+                    "unterminated {% raw %} (missing {% endraw %})", source, idx
+                )
+            literal = source[end + 2 : match.start()]
+            if literal:
+                _append_text(nodes, literal, False, False)
+            i = match.end()
+            pending_newline_strip = True
+            continue
         if keyword == "set":
             match = re.match(r"^([A-Za-z_][A-Za-z_0-9]*)\s*=\s*(.+)$", rest, re.S)
             if not match:
@@ -922,18 +941,30 @@ class Template:
         return "".join(out)
 
 
-_CACHE: Dict[Tuple[str, str], Template] = {}
+#: Compile cache. Bounded, because a long-lived process that renders many
+#: distinct templates (a test suite, or `makemaker template check`) would
+#: otherwise grow this without limit.
+_CACHE: "OrderedDict[Tuple[str, str], Template]" = OrderedDict()
+_CACHE_LIMIT = 512
 
 
 def compile_template(source: str, name: str = "<template>", *, cache: bool = True) -> Template:
     """Compile (and optionally memoise) a template."""
     key = (name, source)
     if cache and key in _CACHE:
+        _CACHE.move_to_end(key)
         return _CACHE[key]
     template = Template(source, name)
     if cache:
         _CACHE[key] = template
+        while len(_CACHE) > _CACHE_LIMIT:
+            _CACHE.popitem(last=False)
     return template
+
+
+def cache_info() -> Tuple[int, int]:
+    """Return ``(entries, limit)`` for the compile cache."""
+    return len(_CACHE), _CACHE_LIMIT
 
 
 def render(source: str, values: Optional[Dict[str, Any]] = None, name: str = "<template>") -> str:

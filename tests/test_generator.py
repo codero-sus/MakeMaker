@@ -9,7 +9,13 @@ import unittest
 from pathlib import Path
 
 from makemaker.engine import TemplateError
-from makemaker.generator import generate, plan_files, read_project_metadata
+from makemaker.generator import (
+    CRLF_EXTENSIONS,
+    generate,
+    newline_for,
+    plan_files,
+    read_project_metadata,
+)
 from makemaker.registry import load_registry, resolve_variable_defaults
 from makemaker.variables import build_variables
 
@@ -283,6 +289,80 @@ class GenerationTests(unittest.TestCase):
             if name == ".makemaker/project.json":
                 continue  # contains a timestamp
             self.assertEqual(content, right[name], name)
+
+
+class LineEndingTest(unittest.TestCase):
+    """Windows-native text formats need CRLF; everything else stays LF."""
+
+    def test_crlf_extensions_are_the_windows_native_ones(self):
+        self.assertEqual(CRLF_EXTENSIONS, {".bat", ".cmd", ".sln"})
+
+    def test_newline_for_picks_crlf_only_for_those_extensions(self):
+        for name in ("gradlew.bat", "build.cmd", "TodoList.sln"):
+            self.assertEqual(newline_for(name), "\r\n", name)
+        for name in ("gradlew", "main.cpp", "Makefile", ".gitignore",
+                     "Program.cs", "app.py", "Cargo.toml", "x.txt"):
+            self.assertEqual(newline_for(name), "\n", name)
+
+    def test_newline_for_uses_the_final_suffix(self):
+        self.assertEqual(newline_for("a.b.bat"), "\r\n")
+        self.assertEqual(newline_for("bat"), "\n")
+        self.assertEqual(newline_for(""), "\n")
+
+    def test_generated_bat_file_is_crlf_and_shell_script_is_lf(self):
+        registry = load_registry()
+        template = registry.get("android")
+        context = build_variables("Todo List", target="android", flavor="console",
+                                  language="kotlin")
+        context.update(resolve_variable_defaults(template, context))
+        with tempfile.TemporaryDirectory() as tmp:
+            result = generate(template, context, Path(tmp) / "todo-list")
+            written = {Path(p).name: (Path(result.destination) / p) for p in result.created}
+
+            bat = written["gradlew.bat"]
+            data = bat.read_bytes()
+            self.assertGreater(data.count(b"\r\n"), 0, "gradlew.bat has no CRLF")
+            self.assertEqual(data.count(b"\n"), data.count(b"\r\n"),
+                             "gradlew.bat has a bare LF")
+
+            sh = written["gradlew"]
+            sh_data = sh.read_bytes()
+            self.assertNotIn(b"\r\n", sh_data, "POSIX shell script must stay LF")
+
+    def test_solution_file_is_crlf_and_csharp_source_is_lf(self):
+        registry = load_registry()
+        template = registry.get("dotnet")
+        context = build_variables("Todo List", target="dotnet", flavor="console",
+                                  language="csharp")
+        context.update(resolve_variable_defaults(template, context))
+        with tempfile.TemporaryDirectory() as tmp:
+            result = generate(template, context, Path(tmp) / "todo-list")
+            by_name = {}
+            for rel in result.created:
+                by_name.setdefault(Path(rel).suffix, Path(result.destination) / rel)
+
+            sln = by_name[".sln"]
+            sln_data = sln.read_bytes()
+            self.assertGreater(sln_data.count(b"\r\n"), 0)
+            self.assertEqual(sln_data.count(b"\n"), sln_data.count(b"\r\n"))
+
+            cs = by_name[".cs"]
+            self.assertNotIn(b"\r\n", cs.read_bytes(), "C# source must stay LF")
+
+    def test_crlf_does_not_double_up_on_rerun(self):
+        registry = load_registry()
+        template = registry.get("android")
+        context = build_variables("Todo List", target="android", flavor="console",
+                                  language="kotlin")
+        context.update(resolve_variable_defaults(template, context))
+        with tempfile.TemporaryDirectory() as tmp:
+            out = Path(tmp) / "todo-list"
+            generate(template, context, out)
+            first = (out / "gradlew.bat").read_bytes()
+            generate(template, context, out, force=True)
+            self.assertEqual(first, (out / "gradlew.bat").read_bytes(),
+                             "regenerating changed the bytes")
+            self.assertNotIn(b"\r\r\n", first, "CRLF got doubled")
 
 
 if __name__ == "__main__":

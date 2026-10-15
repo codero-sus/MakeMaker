@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import datetime as _dt
+import json
 import os
 import shutil
 import stat
@@ -14,9 +15,31 @@ from . import __version__
 from .engine import Context, TemplateError, compile_template, evaluate, parse_expression, render
 from .registry import FileRule, TemplateDef
 
-__all__ = ["PlannedFile", "GenerationResult", "plan_files", "generate"]
+__all__ = [
+    "PlannedFile",
+    "GenerationResult",
+    "plan_files",
+    "generate",
+    "read_project_metadata",
+    "project_metadata",
+    "newline_for",
+    "rule_applies",
+    "render_relative_path",
+    "CRLF_EXTENSIONS",
+]
 
 TMPL_SUFFIX = ".tmpl"
+
+#: Extensions that must be written with CRLF. ``cmd.exe`` parses LF-only batch
+#: files unreliably (labels and ``goto`` in particular), and Visual Studio
+#: writes solution files with CRLF.
+CRLF_EXTENSIONS = {".bat", ".cmd", ".sln"}
+
+
+def newline_for(rel_path: str) -> str:
+    """Line ending to use when writing ``rel_path``."""
+    suffix = PurePosixPath(rel_path).suffix.lower()
+    return "\r\n" if suffix in CRLF_EXTENSIONS else "\n"
 META_DIR = ".makemaker"
 PROJECT_FILE = "project.json"
 
@@ -53,7 +76,7 @@ class GenerationResult:
         return len(self.created) + len(self.overwritten)
 
 
-def _rule_applies(rule: FileRule, context: Dict[str, Any], name: str) -> bool:
+def rule_applies(rule: FileRule, context: Dict[str, Any], name: str) -> bool:
     if not rule.when:
         return True
     expr = parse_expression(rule.when)
@@ -63,7 +86,7 @@ def _rule_applies(rule: FileRule, context: Dict[str, Any], name: str) -> bool:
     return bool(result)
 
 
-def _render_path(segment: str, context: Dict[str, Any], where: str) -> str:
+def render_relative_path(segment: str, context: Dict[str, Any], where: str) -> str:
     if "{{" not in segment and "{%" not in segment:
         return segment
     return render(segment, context, name=where)
@@ -95,13 +118,13 @@ def plan_files(
 
         keep = True
         if rule is not None and rule.when:
-            keep = _rule_applies(rule, context, f"{template.id}:{rel_source} rule")
+            keep = rule_applies(rule, context, f"{template.id}:{rel_source} rule")
         if not keep:
             continue
 
         # Directories and file names may themselves contain {{ placeholders }}.
         rendered_parts = [
-            _render_path(part, context, f"{template.id}:{rel_source}")
+            render_relative_path(part, context, f"{template.id}:{rel_source}")
             for part in PurePosixPath(rel_source).parts
         ]
         rel_path = PurePosixPath(*rendered_parts).as_posix()
@@ -170,14 +193,16 @@ def project_metadata(
     }
 
 
-def _write_rendered(path: Path, source: Path, context: Dict[str, Any]) -> None:
+def _write_rendered(
+    path: Path, source: Path, context: Dict[str, Any], rel_path: str = ""
+) -> None:
     text = source.read_text(encoding="utf-8")
     try:
         output = compile_template(text, name=source.name, cache=False).render(context)
     except TemplateError as exc:
         raise TemplateError(f"{source.name}: {exc}") from None
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(output, encoding="utf-8", newline="\n")
+    path.write_text(output, encoding="utf-8", newline=newline_for(rel_path))
 
 
 def _apply_mode(path: Path, planned: PlannedFile) -> None:
@@ -226,7 +251,7 @@ def generate(
             continue
         target.parent.mkdir(parents=True, exist_ok=True)
         if item.rendered:
-            _write_rendered(target, item.source, context)
+            _write_rendered(target, item.source, context, item.rel_path)
         else:
             shutil.copyfile(item.source, target)
         _apply_mode(target, item)
@@ -237,8 +262,6 @@ def generate(
     if dry_run:
         result.created.append(f"{META_DIR}/{PROJECT_FILE}")
     else:
-        import json
-
         meta_path.parent.mkdir(parents=True, exist_ok=True)
         meta_path.write_text(json.dumps(metadata, indent=2, sort_keys=False) + "\n", encoding="utf-8")
         result.created.append(f"{META_DIR}/{PROJECT_FILE}")
@@ -248,8 +271,6 @@ def generate(
 
 def read_project_metadata(directory: Path) -> Dict[str, Any]:
     """Read ``.makemaker/project.json`` from a generated project."""
-    import json
-
     path = Path(directory) / META_DIR / PROJECT_FILE
     if not path.is_file():
         raise TemplateError(f"{directory} is not a MakeMaker project (missing {META_DIR}/{PROJECT_FILE})")
@@ -258,11 +279,3 @@ def read_project_metadata(directory: Path) -> Dict[str, Any]:
     except json.JSONDecodeError as exc:
         raise TemplateError(f"{path}: invalid JSON ({exc})") from None
 
-
-def chmod_executable(path: Path) -> None:
-    """Best-effort ``chmod +x`` (ignored on platforms without POSIX modes)."""
-    try:
-        current = path.stat().st_mode
-        os.chmod(path, current | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
-    except OSError:  # pragma: no cover - non-POSIX filesystems
-        pass

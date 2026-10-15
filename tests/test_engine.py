@@ -9,6 +9,8 @@ from makemaker.engine import (
     Context,
     Template,
     TemplateError,
+    cache_info,
+    compile_template,
     case_camel,
     case_kebab,
     case_pascal,
@@ -214,6 +216,130 @@ class HelperTests(unittest.TestCase):
         template = Template("{{ v }}")
         self.assertEqual(template.render({"v": 1}), "1")
         self.assertEqual(template.render({"v": 2}), "2")
+
+
+class RawBlockTest(unittest.TestCase):
+    """``{% raw %}`` must pass text through with no interpolation."""
+
+    def test_raw_passes_tags_through_untouched(self):
+        out = render("{% raw %}{{ not_a_variable }}{% endraw %}", {})
+        self.assertEqual(out, "{{ not_a_variable }}")
+
+    def test_raw_surrounds_rendered_text(self):
+        out = render("{{ v }}|{% raw %}{{ v }}{% endraw %}", {"v": "A"})
+        self.assertEqual(out, "A|{{ v }}")
+
+    def test_raw_keeps_cmake_dollar_brace_literals(self):
+        # CMake generator expressions collide with our tag syntax.
+        source = "target_compile_features(${{ '{' }}raw{{ '}' }})"
+        self.assertIn("{", source)
+        out = render("{% raw %}set(X $<CONFIG:Debug>){% endraw %}", {})
+        self.assertEqual(out, "set(X $<CONFIG:Debug>)")
+
+    def test_raw_handles_newlines_like_other_block_tags(self):
+        # A block tag on its own line consumes its trailing newline, exactly
+        # as {% if %} does. Assert the two agree rather than a made-up rule.
+        via_if = render("a\n{% if t %}b\n{% endif %}\nc", {"t": True})
+        via_raw = render("a\n{% raw %}b\n{% endraw %}\nc", {})
+        self.assertEqual(via_if, "a\nb\nc")
+        self.assertEqual(via_raw, via_if)
+
+    def test_raw_without_endraw_is_an_error(self):
+        with self.assertRaises(TemplateError) as ctx:
+            render("{% raw %}never closed", {})
+        self.assertIn("unterminated", str(ctx.exception).lower())
+
+    def test_stray_endraw_is_rejected(self):
+        with self.assertRaises(TemplateError):
+            render("{% endraw %}", {})
+
+    def test_raw_content_is_not_scanned_for_other_tags(self):
+        out = render("{% raw %}{% if x %}{# c #}{% endraw %}", {})
+        self.assertEqual(out, "{% if x %}{# c #}")
+
+
+class JoinFilterTest(unittest.TestCase):
+    def test_join_strings(self):
+        self.assertEqual(render("{{ v | join(\"-\") }}", {"v": ["a", "b"]}), "a-b")
+
+    def test_join_coerces_non_strings(self):
+        self.assertEqual(render("{{ v | join(\"\") }}", {"v": [1, 2, 3]}), "123")
+
+    def test_join_defaults_to_empty_separator(self):
+        self.assertEqual(render("{{ v | join() }}", {"v": ["a", "b"]}), "ab")
+
+    def test_join_empty_list(self):
+        self.assertEqual(render("{{ v | join(\"x\") }}", {"v": []}), "")
+
+    def test_join_on_non_iterable_fails(self):
+        with self.assertRaises(TemplateError):
+            render("{{ v | join(\"-\") }}", {"v": 5})
+
+    def test_join_is_registered(self):
+        self.assertIn("join", FILTERS)
+
+
+class CacheTest(unittest.TestCase):
+    """The compile cache is bounded so long-lived processes do not grow."""
+
+    def setUp(self):
+        from makemaker import engine
+
+        self._engine = engine
+        self._limit = engine._CACHE_LIMIT
+        engine._CACHE.clear()
+
+    def tearDown(self):
+        self._engine._CACHE.clear()
+        self._engine._CACHE_LIMIT = self._limit
+
+    def test_cache_memoises_compiled_templates(self):
+        first = compile_template("{{ v }}", name="same.tmpl", cache=True)
+        second = compile_template("{{ v }}", name="same.tmpl", cache=True)
+        self.assertIs(first, second)
+
+    def test_cache_info_reports_size_and_limit(self):
+        self.assertEqual(cache_info(), (0, self._limit))
+        compile_template("{{ v }}", name="a.tmpl", cache=True)
+        entries, limit = cache_info()
+        self.assertEqual(entries, 1)
+        self.assertEqual(limit, self._limit)
+
+    def test_cache_stops_at_its_limit_and_still_works(self):
+        for index in range(self._limit + 50):
+            compile_template("{{ v }}", name=f"t{index}.tmpl", cache=True)
+        entries, limit = cache_info()
+        self.assertEqual(entries, limit, "cache grew past its limit")
+        # Evicting the oldest entries must not break the newest one.
+        newest = compile_template(
+            "{{ v }}", name=f"t{self._limit + 49}.tmpl", cache=True
+        )
+        self.assertEqual(newest.render({"v": "ok"}), "ok")
+
+    def test_oldest_entry_is_evicted_first(self):
+        source = "{{ v }}"
+        for index in range(self._limit):
+            compile_template(source, name=f"e{index}.tmpl", cache=True)
+        compile_template(source, name="fresh.tmpl", cache=True)
+        # The cache is keyed by (name, source) so that editing a template
+        # file can never return a stale compilation.
+        names = [name for name, _ in self._engine._CACHE]
+        self.assertNotIn("e0.tmpl", names, "oldest entry was not evicted")
+        self.assertIn("e1.tmpl", names, "evicted too much")
+        self.assertIn("fresh.tmpl", names)
+        self.assertEqual(len(names), self._limit)
+
+    def test_same_name_different_source_is_a_separate_entry(self):
+        first = compile_template("{{ v }}", name="x.tmpl", cache=True)
+        second = compile_template("{{ v }}!", name="x.tmpl", cache=True)
+        self.assertIsNot(first, second)
+        self.assertEqual(second.render({"v": 1}), "1!")
+        # Editing a template must not hand back the previous compilation.
+        self.assertEqual(first.render({"v": 1}), "1")
+
+    def test_render_bypasses_the_cache(self):
+        render("{{ v }}", {"v": 1})
+        self.assertEqual(cache_info()[0], 0)
 
 
 if __name__ == "__main__":
