@@ -535,11 +535,42 @@ static char *find_in_path(const char *name) {
     return NULL;
 }
 
+/* Shell-quote a string into `out` (which must have room for 4x + 3 bytes).
+ *
+ * A tool path containing a single quote would otherwise close the quoted
+ * region and let the remainder be interpreted by the shell.
+ */
+static void shell_quote(const char *text, char *out, size_t capacity) {
+    size_t written = 0;
+    if (capacity == 0) {
+        return;
+    }
+    out[written++] = '\'';
+    for (const char *cursor = text; *cursor && written + 5 < capacity; cursor++) {
+        if (*cursor == '\'') {
+            /* close, add an escaped quote, reopen */
+            out[written++] = '\'';
+            out[written++] = '\\';
+            out[written++] = '\'';
+            out[written++] = '\'';
+        } else {
+            out[written++] = *cursor;
+        }
+    }
+    out[written++] = '\'';
+    out[written] = '\0';
+}
+
 /* Run "path --version 2>&1" and return the first line, or an empty string. */
 static char *capture_version(const char *path, const char *args) {
-    size_t needed = strlen(path) + strlen(args) + 16;
+    size_t quoted_size = strlen(path) * 4 + 3;
+    char *quoted = xmalloc(quoted_size + 1);
+    shell_quote(path, quoted, quoted_size + 1);
+
+    size_t needed = strlen(quoted) + strlen(args) + 16;
     char *command = xmalloc(needed);
-    snprintf(command, needed, "'%s' %s 2>&1", path, args);
+    snprintf(command, needed, "%s %s 2>&1", quoted, args);
+    free(quoted);
 
     char *result = xstrdup("");
     FILE *handle = popen(command, "r");

@@ -121,6 +121,67 @@ class BasicCommandTests(unittest.TestCase):
         self.assertIn(f"OK {cross_product} template combination(s)", out)
         self.assertIn("full cross product", out)
 
+    def test_template_validate_passes_on_bundled_templates(self):
+        from makemaker.registry import load_registry
+
+        registry = load_registry()
+        code, out, _ = run_cli("template", "validate")
+        self.assertEqual(code, EXIT_OK, out)
+        self.assertIn(f"OK {len(registry.ids())} template(s)", out)
+        self.assertIn("no issues", out)
+
+    def test_template_validate_single_template(self):
+        code, out, _ = run_cli("template", "validate", "--template", "linux")
+        self.assertEqual(code, EXIT_OK, out)
+        self.assertIn("OK 1 template(s)", out)
+
+    def test_template_validate_short_flag(self):
+        code, out, _ = run_cli("template", "validate", "-t", "go")
+        self.assertEqual(code, EXIT_OK, out)
+
+    def test_template_validate_json(self):
+        code, out, _ = run_cli("template", "validate", "--json")
+        self.assertEqual(code, EXIT_OK, out)
+        payload = json.loads(out)
+        self.assertEqual(payload["issue_count"], 0)
+        self.assertTrue(all(t["issues"] == [] for t in payload["templates"]))
+        self.assertGreater(len(payload["templates"]), 0)
+
+    def test_template_validate_rejects_unknown_template_as_usage_error(self):
+        code, out, err = run_cli("template", "validate", "--template", "nope")
+        self.assertEqual(code, EXIT_USAGE)
+        self.assertIn("unknown template 'nope'", err)
+        self.assertIn("available:", out)
+
+    def test_template_validate_reports_a_broken_template(self):
+        # Swap in a broken template so the failure path is exercised, not just
+        # the happy path.
+        import shutil
+        import tempfile
+
+        from makemaker import cli, registry
+
+        tmp = Path(tempfile.mkdtemp())
+        broken_dir = tmp / "templates"
+        shutil.copytree(
+            Path(registry.__file__).resolve().parent / "templates", broken_dir
+        )
+        (broken_dir / "linux" / ".gitignore").write_text(
+            "{{ leaked_variable }}\n", encoding="utf-8"
+        )
+
+        original = cli.load_registry
+        cli.load_registry = lambda: registry.load_registry(broken_dir)
+        try:
+            code, out, err = run_cli("template", "validate", "--template", "linux")
+        finally:
+            cli.load_registry = original
+
+        self.assertEqual(code, EXIT_ERROR, out + err)
+        # ui.error() writes to stderr, the summary line to stdout.
+        self.assertIn("copied verbatim", err)
+        self.assertIn("FAILED 1 issue(s)", out)
+
     def test_doctor_reports_the_host(self):
         code, out, _ = run_cli("doctor", "--no-native")
         self.assertEqual(code, EXIT_OK)

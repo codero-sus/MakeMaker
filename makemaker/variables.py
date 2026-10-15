@@ -18,7 +18,6 @@ __all__ = [
     "validate_name",
     "java_package",
     "java_segment",
-    "bundle_id",
     "as_identifier",
     "build_variables",
 ]
@@ -78,11 +77,6 @@ _JAVA_KEYWORDS = {
     "return", "short", "static", "strictfp", "super", "switch", "synchronized", "this",
     "throw", "throws", "transient", "try", "void", "volatile", "while",
 }
-
-
-def bundle_id(*parts: Iterable[str]) -> str:
-    """Reverse-DNS identifier (iOS bundle id, Android applicationId, ...)."""
-    return java_package(*parts)
 
 
 _SOURCE_EXT = {

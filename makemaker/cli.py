@@ -511,6 +511,65 @@ def cmd_template_check(args: argparse.Namespace, ui: UI) -> int:
     return EXIT_OK
 
 
+def cmd_template_validate(args: argparse.Namespace, ui: UI) -> int:
+    """Statically check templates without generating anything.
+
+    Unlike ``template check``, which only proves a template *renders*, this
+    catches the mistakes that render fine and still produce a broken project:
+    a verbatim file carrying template syntax, a rule matching nothing, an
+    unknown ``template.json`` key, two files colliding on one output path.
+    """
+    from .lint import validate_registry, validate_template
+
+    registry = load_registry()
+    if args.template:
+        if args.template not in registry:
+            ui.error(f"unknown template {args.template!r}")
+            ui.info(f"available: {', '.join(registry.ids())}")
+            return EXIT_USAGE
+        template = registry.get(args.template)
+        issues = validate_template(template)
+        templates = [template]
+    else:
+        issues = validate_registry(registry)
+        templates = registry.sorted()
+
+    if args.json:
+        print(
+            json.dumps(
+                {
+                    "templates": [
+                        {
+                            "id": t.id,
+                            "issues": [
+                                {"path": i.path, "message": i.message}
+                                for i in issues
+                                if i.template == t.id
+                            ],
+                        }
+                        for t in templates
+                    ],
+                    "issue_count": len(issues),
+                },
+                indent=2,
+            )
+        )
+        return EXIT_OK if not issues else EXIT_ERROR
+
+    if issues:
+        for issue in issues:
+            ui.error(issue.format())
+        ui.info(f"{ui.red('FAILED')} {len(issues)} issue(s) across {len(templates)} template(s)")
+        return EXIT_ERROR
+
+    files = sum(len(t.files()) for t in templates)
+    ui.info(
+        f"{ui.green('OK')} {len(templates)} template(s), {files} file(s), "
+        "no issues"
+    )
+    return EXIT_OK
+
+
 def cmd_version(args: argparse.Namespace, ui: UI) -> int:
     from . import native
 
@@ -620,6 +679,17 @@ def build_parser() -> argparse.ArgumentParser:
         help="also render flavour/language combinations the CLI would reject",
     )
     check.set_defaults(func=cmd_template_check, template_command="check")
+
+    validate = check_sub.add_parser(
+        "validate",
+        parents=[common],
+        help="static checks: dead rules, key typos, output collisions",
+    )
+    validate.add_argument(
+        "--template", "-t", help="only validate this template"
+    )
+    validate.add_argument("--json", action="store_true")
+    validate.set_defaults(func=cmd_template_validate, template_command="validate")
 
     version = sub.add_parser("version", parents=[common], help="print version information")
     version.add_argument("--json", action="store_true")
