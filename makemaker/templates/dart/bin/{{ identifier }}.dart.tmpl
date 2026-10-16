@@ -1,0 +1,23 @@
+// {{ project_name }} entry point.
+
+import 'package:{{ identifier }}/{{ identifier }}.dart' as app;
+
+void main(List<String> args) {
+  final first = args.isEmpty ? null : args.first;
+
+  switch (first) {
+    case '--version':
+    case '-V':
+      print(app.version);
+      return;
+    case '--help':
+    case '-h':
+      print('{{ project_name }} ' + app.version);
+      print('');
+      print('Usage: {{ bin_name }} [name]');
+      print('       {{ bin_name }} --version');
+      return;
+  }
+
+  print(app.greet(first));
+}

@@ -1,0 +1,33 @@
+//! {{ project_name }} entry point.
+
+const std = @import("std");
+const {{ identifier }} = @import("{{ identifier }}");
+
+pub fn main() !void {
+    const allocator = std.heap.page_allocator;
+    const stdout = std.io.getStdOut().writer();
+    const args = std.os.argv;
+
+    // Hoisted out of the print calls: Zig's anonymous-struct literal would
+    // otherwise sit directly against a template tag and confuse the parser.
+    const version = {{ identifier }}.version;
+
+    const first: ?[]const u8 = if (args.len > 1) std.mem.span(args[1]) else null;
+
+    if (first) |flag| {
+        if (std.mem.eql(u8, flag, "--version") or std.mem.eql(u8, flag, "-V")) {
+            try stdout.print("{s}\n", .{version});
+            return;
+        }
+        if (std.mem.eql(u8, flag, "--help") or std.mem.eql(u8, flag, "-h")) {
+            try stdout.print("{{ project_name }} {s}\n\n", .{version});
+            try stdout.print("Usage: {{ bin_name }} [name]\n", .{});
+            try stdout.print("       {{ bin_name }} --version\n", .{});
+            return;
+        }
+    }
+
+    const message = try {{ identifier }}.greet(allocator, first);
+    defer allocator.free(message);
+    try stdout.print("{s}\n", .{message});
+}

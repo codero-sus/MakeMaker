@@ -1,0 +1,20 @@
+# frozen_string_literal: true
+
+module {{ class_name }}
+  # Produces greetings and trivial arithmetic.
+  class Greeter
+    def initialize(name = "world")
+      @name = name
+    end
+
+    attr_reader :name
+
+    def greet
+      "Hello, #{@name}!"
+    end
+
+    def self.add(left, right)
+      left + right
+    end
+  end
+end

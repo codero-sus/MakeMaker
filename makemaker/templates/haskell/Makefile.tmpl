@@ -1,0 +1,20 @@
+# {{ project_name }}
+
+CABAL ?= cabal
+
+.PHONY: help build test run clean
+
+help:
+	@echo "{{ project_name }} targets: build test run clean"
+
+build:
+	@$(CABAL) build all
+
+test:
+	@$(CABAL) test
+
+run:
+	@$(CABAL) run {{ bin_name }}
+
+clean:
+	@$(CABAL) clean

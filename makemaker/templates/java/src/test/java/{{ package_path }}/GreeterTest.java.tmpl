@@ -1,0 +1,28 @@
+package {{ package }};
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
+
+class GreeterTest {
+
+    @Test
+    void greetsTheWorld() {
+        assertEquals("Hello, world!", new Greeter().greet());
+    }
+
+    @Test
+    void greetsAGivenName() {
+        assertEquals("Hello, Ada!", new Greeter("Ada").greet());
+    }
+
+    @Test
+    void addsTwoNumbers() {
+        assertEquals(5, Greeter.add(2, 3));
+    }
+
+    @Test
+    void exposesAVersion() {
+        assertEquals("{{ version }}", Greeter.VERSION);
+    }
+}

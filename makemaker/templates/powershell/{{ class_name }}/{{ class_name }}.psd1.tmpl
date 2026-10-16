@@ -1,0 +1,14 @@
+@{
+    RootModule        = '{{ class_name }}.psm1'
+    ModuleVersion     = '{{ version }}'
+    GUID              = '{{ project_guid }}'
+    Author            = '{{ author }}'
+    CompanyName       = '{{ organization }}'
+    Copyright         = '(c) {{ copyright_year }} {{ author }}. All rights reserved.'
+    Description       = '{{ description }}'
+    PowerShellVersion = '{{ ps_version }}'
+    FunctionsToExport = @('Get-Greeting', 'Add-Number', 'Get-{{ class_name }}Version')
+    CmdletsToExport   = @()
+    VariablesToExport = @()
+    AliasesToExport   = @()
+}

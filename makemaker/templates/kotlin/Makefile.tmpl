@@ -1,0 +1,20 @@
+# {{ project_name }}
+
+GRADLE ?= gradle
+
+.PHONY: help build test run clean
+
+help:
+	@echo "{{ project_name }} targets: build test run clean"
+
+build:
+	@$(GRADLE) build -x test
+
+test:
+	@$(GRADLE) test
+
+run:
+	@$(GRADLE) run --quiet --args=""
+
+clean:
+	@$(GRADLE) clean

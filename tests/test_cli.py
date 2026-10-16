@@ -55,9 +55,9 @@ class BasicCommandTests(unittest.TestCase):
         code, out, _ = run_cli("list", "--json")
         self.assertEqual(code, EXIT_OK)
         payload = json.loads(out)
-        self.assertEqual({item["id"] for item in payload},
-                         {"android", "dotnet", "go", "ios", "linux",
-                          "macos", "node", "python", "rust", "windows"})
+        from tests.test_registry import EXPECTED_TARGETS
+
+        self.assertEqual({item["id"] for item in payload}, EXPECTED_TARGETS)
 
     def test_info_lists_files(self):
         code, out, _ = run_cli("info", "linux")
@@ -89,6 +89,7 @@ class BasicCommandTests(unittest.TestCase):
         the raw cross product is 24, five of which the CLI rejects.
         """
         from makemaker.registry import load_registry
+        from tests.test_registry import EXPECTED_TARGETS
 
         registry = load_registry()
         reachable = sum(
@@ -100,8 +101,14 @@ class BasicCommandTests(unittest.TestCase):
             len(template.flavors or [""]) * len(template.languages or [""])
             for template in registry.sorted()
         )
-        self.assertEqual(reachable, 19)
-        self.assertEqual(cross_product, 24)
+        # Every single-language target contributes exactly one reachable
+        # combination; the C-family targets contribute the rest. Assert the
+        # relationship rather than a hardcoded total so adding a simple target
+        # does not silently invalidate this test.
+        self.assertGreaterEqual(reachable, len(EXPECTED_TARGETS))
+        self.assertGreaterEqual(cross_product, reachable)
+        self.assertEqual(reachable, 37)
+        self.assertEqual(cross_product, 42)
 
         code, out, _ = run_cli("template", "check")
         self.assertEqual(code, EXIT_OK, out)

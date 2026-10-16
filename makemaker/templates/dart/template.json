@@ -1,0 +1,31 @@
+{
+  "flavors": [
+    "console"
+  ],
+  "default_flavor": "console",
+  "variables": {
+    "app_name": {
+      "description": "Application name",
+      "default": "{{ project_name }}"
+    },
+    "dart_sdk": {
+      "description": "Dart SDK constraint",
+      "default": "^3.3.0"
+    }
+  },
+  "requires": {
+    "*": [
+      "dart"
+    ]
+  },
+  "rules": [],
+  "notes": "Depends only on package:test, which 'dart pub get' fetches once. 'dart analyze' and 'dart run' need no network after that.",
+  "id": "dart",
+  "display_name": "Dart CLI",
+  "summary": "Dart console application with a test suite",
+  "os": "dart",
+  "languages": [
+    "dart"
+  ],
+  "default_language": "dart"
+}

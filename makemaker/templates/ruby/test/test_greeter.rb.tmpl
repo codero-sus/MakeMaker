@@ -1,0 +1,22 @@
+# frozen_string_literal: true
+
+require "minitest/autorun"
+require "{{ identifier }}"
+
+class GreeterTest < Minitest::Test
+  def test_greets_the_world
+    assert_equal "Hello, world!", {{ class_name }}::Greeter.new.greet
+  end
+
+  def test_greets_a_name
+    assert_equal "Hello, Ada!", {{ class_name }}::Greeter.new("Ada").greet
+  end
+
+  def test_adds_two_numbers
+    assert_equal 5, {{ class_name }}::Greeter.add(2, 3)
+  end
+
+  def test_exposes_a_version
+    assert_equal "{{ version }}", {{ class_name }}::VERSION
+  end
+end

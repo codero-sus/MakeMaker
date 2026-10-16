@@ -1,0 +1,20 @@
+module {{ class_name }}.Tests.GreeterTests
+
+open Xunit
+open {{ class_name }}
+
+[<Fact>]
+let ``greets the world`` () =
+    Assert.Equal("Hello, world!", Greeter.greet "world")
+
+[<Fact>]
+let ``greets a given name`` () =
+    Assert.Equal("Hello, Ada!", Greeter.greet "Ada")
+
+[<Fact>]
+let ``adds two numbers`` () =
+    Assert.Equal(5, Greeter.add 2 3)
+
+[<Fact>]
+let ``exposes a version`` () =
+    Assert.Equal("{{ version }}", Greeter.version)

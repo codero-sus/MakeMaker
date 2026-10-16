@@ -1,0 +1,21 @@
+import 'package:test/test.dart';
+import 'package:{{ identifier }}/{{ identifier }}.dart' as app;
+
+void main() {
+  test('greets the world', () {
+    expect(app.greet(), 'Hello, world!');
+    expect(app.greet('   '), 'Hello, world!');
+  });
+
+  test('greets a given name', () {
+    expect(app.greet('Ada'), 'Hello, Ada!');
+  });
+
+  test('sums numbers', () {
+    expect(app.sum([1, 2, 3]), 6);
+  });
+
+  test('exposes a version', () {
+    expect(app.version, '{{ version }}');
+  });
+}

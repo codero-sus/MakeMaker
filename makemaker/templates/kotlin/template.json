@@ -1,0 +1,36 @@
+{
+  "flavors": [
+    "console"
+  ],
+  "default_flavor": "console",
+  "variables": {
+    "app_name": {
+      "description": "Application name",
+      "default": "{{ project_name }}"
+    },
+    "kotlin_version": {
+      "description": "Kotlin version",
+      "default": "1.9.23"
+    },
+    "jvm_target": {
+      "description": "JVM target",
+      "default": "17"
+    }
+  },
+  "requires": {
+    "*": [
+      "java",
+      "gradle"
+    ]
+  },
+  "rules": [],
+  "notes": "Needs a JDK and Gradle. This is the JVM flavour; for Android use the android target.",
+  "id": "kotlin",
+  "display_name": "Kotlin JVM CLI",
+  "summary": "Kotlin JVM console application built with Gradle Kotlin DSL",
+  "os": "kotlin",
+  "languages": [
+    "kotlin"
+  ],
+  "default_language": "kotlin"
+}

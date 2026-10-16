@@ -1,0 +1,27 @@
+# {{ project_name }}
+
+BIN    := bin/{{ bin_name }}
+PREFIX ?= /usr/local
+
+.PHONY: help test run lint clean install
+
+help:
+	@echo "{{ project_name }} targets: test run lint clean install"
+
+test:
+	@./run-tests.sh
+
+run:
+	@$(BIN)
+
+lint:
+	@bash -n $(BIN) && bash -n lib/{{ identifier }}.sh && echo "syntax OK"
+
+clean:
+	@rm -f *.log *.tmp
+	@echo "cleaned"
+
+install:
+	@install -d $(DESTDIR)$(PREFIX)/bin
+	@install -m 0755 $(BIN) $(DESTDIR)$(PREFIX)/bin/{{ bin_name }}
+	@echo "installed {{ bin_name }}"

@@ -1,0 +1,29 @@
+#!{{ shell }}
+# {{ project_name }} - test runner. Exits non-zero on the first failure.
+
+set -uo pipefail
+
+here="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+. "$here/lib/{{ identifier }}.sh"
+
+failures=0
+passed=0
+
+check() {
+    local description="$1" expected="$2" actual="$3"
+    if [ "$expected" = "$actual" ]; then
+        passed=$(( passed + 1 ))
+        printf 'ok   - %s\n' "$description"
+    else
+        failures=$(( failures + 1 ))
+        printf 'FAIL - %s\n  expected: %s\n  actual:   %s\n' "$description" "$expected" "$actual"
+    fi
+}
+
+check "greets the world" "Hello, world!" "$({{ identifier }}_greet)"
+check "greets a name"    "Hello, Ada!"   "$({{ identifier }}_greet Ada)"
+check "adds two numbers" "5"             "$({{ identifier }}_add 2 3)"
+check "reports version"  "{{ version }}" "$({{ identifier }}_version)"
+
+printf '\n%d passed, %d failed\n' "$passed" "$failures"
+[ "$failures" -eq 0 ]

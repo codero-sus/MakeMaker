@@ -1,0 +1,21 @@
+# {{ project_name }} - {{ description }}
+
+VERSION <- "{{ version }}"
+
+#' Greet one or more names.
+#'
+#' @param name Character vector of names; defaults to "world".
+#' @return A character vector of greetings.
+greet <- function(name = "world") {
+  vapply(name, function(n) sprintf("Hello, %s!", n), character(1), USE.NAMES = FALSE)
+}
+
+#' Add two numbers.
+add <- function(left, right) {
+  left + right
+}
+
+#' Package version.
+version <- function() {
+  VERSION
+}

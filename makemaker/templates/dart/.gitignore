@@ -1,0 +1,7 @@
+*.log
+*.tmp
+.DS_Store
+.dart_tool/
+.packages
+build/
+pubspec.lock

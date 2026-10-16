@@ -1,0 +1,20 @@
+# {{ project_name }}
+
+SBT ?= sbt
+
+.PHONY: help build test run clean
+
+help:
+	@echo "{{ project_name }} targets: build test run clean"
+
+build:
+	@$(SBT) compile
+
+test:
+	@$(SBT) test
+
+run:
+	@$(SBT) run
+
+clean:
+	@$(SBT) clean

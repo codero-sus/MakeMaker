@@ -1,0 +1,25 @@
+-- | {{ project_name }} - tests. Exits non-zero on failure.
+module Main (main) where
+
+import System.Exit (exitFailure, exitSuccess)
+import {{ class_name }}.Greeter (add, greet, version)
+
+check :: (Eq a, Show a) => Int -> String -> a -> a -> IO Int
+check failures what expected actual
+  | expected == actual = do
+      putStrLn ("ok   - " <> what)
+      return failures
+  | otherwise = do
+      putStrLn ("FAIL - " <> what)
+      putStrLn ("  expected: " <> show expected)
+      putStrLn ("  actual:   " <> show actual)
+      return (failures + 1)
+
+main :: IO ()
+main = do
+  f0 <- check 0 "greets the world" "Hello, world!" (greet "world")
+  f1 <- check f0 "greets a name" "Hello, Ada!" (greet "Ada")
+  f2 <- check f1 "adds two numbers" 5 (add 2 3)
+  f3 <- check f2 "reports version" "{{ version }}" version
+  putStrLn (show (4 - f3) <> " passed, " <> show f3 <> " failed")
+  if f3 > 0 then exitFailure else exitSuccess

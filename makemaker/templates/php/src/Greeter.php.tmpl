@@ -1,0 +1,32 @@
+<?php
+
+declare(strict_types=1);
+
+namespace {{ class_name }};
+
+/**
+ * {{ project_name }} - {{ description }}
+ */
+final class Greeter
+{
+    public const VERSION = '{{ version }}';
+
+    public function __construct(private string $name = 'world')
+    {
+    }
+
+    public function greet(): string
+    {
+        return sprintf('Hello, %s!', $this->name);
+    }
+
+    public static function add(int $left, int $right): int
+    {
+        return $left + $right;
+    }
+
+    public static function version(): string
+    {
+        return self::VERSION;
+    }
+}

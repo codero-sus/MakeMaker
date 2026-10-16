@@ -1,0 +1,13 @@
+/// {{ project_name }} - {{ description }}
+library;
+
+const String version = '{{ version }}';
+
+/// Greet a name, falling back to `world`.
+String greet([String? name]) {
+  final who = (name == null || name.trim().isEmpty) ? 'world' : name.trim();
+  return 'Hello, $who!';
+}
+
+/// Sum every number passed in.
+num sum(List<num> numbers) => numbers.fold<num>(0, (a, b) => a + b);

@@ -1,0 +1,22 @@
+# {{ project_name }}
+
+PHP ?= php
+
+.PHONY: help test run lint clean
+
+help:
+	@echo "{{ project_name }} targets: test run lint clean"
+
+test:
+	@$(PHP) tests/run.php
+
+run:
+	@$(PHP) bin/{{ bin_name }}.php
+
+lint:
+	@$(PHP) -l src/Greeter.php
+	@$(PHP) -l bin/{{ bin_name }}.php
+
+clean:
+	@rm -rf vendor *.log
+	@echo "cleaned"

@@ -1,0 +1,22 @@
+defmodule {{ class_name }}.MixProject do
+  use Mix.Project
+
+  def project do
+    [
+      app: :{{ identifier }},
+      version: "{{ version }}",
+      elixir: "~> {{ elixir_version }}",
+      start_permanent: Mix.env() == :prod,
+      deps: deps(),
+      description: "{{ description }}"
+    ]
+  end
+
+  def application do
+    [extra_applications: [:logger]]
+  end
+
+  defp deps do
+    []
+  end
+end

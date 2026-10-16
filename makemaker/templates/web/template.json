@@ -1,0 +1,29 @@
+{
+  "flavors": [
+    "console"
+  ],
+  "default_flavor": "console",
+  "variables": {
+    "app_name": {
+      "description": "Application name",
+      "default": "{{ project_name }}"
+    },
+    "accent_color": {
+      "description": "Accent colour",
+      "default": "#2563eb"
+    }
+  },
+  "requires": {
+    "*": []
+  },
+  "rules": [],
+  "notes": "No build step and no dependencies: open index.html in a browser, or serve the folder with any static server. Tests run under 'node --test' against the plain ES module in src/.",
+  "id": "web",
+  "display_name": "Static website",
+  "summary": "Dependency-free static site: HTML, CSS and vanilla ES modules",
+  "os": "web",
+  "languages": [
+    "javascript"
+  ],
+  "default_language": "javascript"
+}

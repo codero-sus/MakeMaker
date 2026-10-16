@@ -1,0 +1,9 @@
+(* {{ project_name }} - {{ description }} *)
+
+let version = "{{ version }}"
+
+let greet name =
+  let who = if String.trim name = "" then "world" else name in
+  Printf.sprintf "Hello, %s!" who
+
+let add left right = left + right

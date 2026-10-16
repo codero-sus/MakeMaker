@@ -1,0 +1,32 @@
+{
+  "flavors": [
+    "console"
+  ],
+  "default_flavor": "console",
+  "variables": {
+    "app_name": {
+      "description": "Application name",
+      "default": "{{ project_name }}"
+    },
+    "elixir_version": {
+      "description": "Minimum Elixir version",
+      "default": "1.15"
+    }
+  },
+  "requires": {
+    "*": [
+      "elixir",
+      "mix"
+    ]
+  },
+  "rules": [],
+  "notes": "No Hex dependencies, so 'mix test' runs offline on a stock Elixir install.",
+  "id": "elixir",
+  "display_name": "Elixir project",
+  "summary": "Mix project with a library, CLI and ExUnit tests",
+  "os": "elixir",
+  "languages": [
+    "elixir"
+  ],
+  "default_language": "elixir"
+}

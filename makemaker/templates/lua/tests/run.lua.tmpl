@@ -1,0 +1,27 @@
+#!/usr/bin/env lua
+-- {{ project_name }} - test runner. Exits non-zero on the first failure.
+
+package.path = "./src/?.lua;" .. package.path
+
+local {{ identifier }} = require("{{ identifier }}")
+
+local passed, failures = 0, 0
+
+local function check(what, expected, actual)
+  if expected == actual then
+    passed = passed + 1
+    print(string.format("ok   - %s", what))
+  else
+    failures = failures + 1
+    print(string.format("FAIL - %s\n  expected: %s\n  actual:   %s",
+      what, tostring(expected), tostring(actual)))
+  end
+end
+
+check("greets the world", "Hello, world!", {{ identifier }}.greet())
+check("greets a name", "Hello, Ada!", {{ identifier }}.greet("Ada"))
+check("sums numbers", 6, {{ identifier }}.sum(1, 2, 3))
+check("reports version", "{{ version }}", {{ identifier }}.version)
+
+print(string.format("\n%d passed, %d failed", passed, failures))
+os.exit(failures == 0 and 0 or 1)

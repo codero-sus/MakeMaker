@@ -1,0 +1,14 @@
+package {{ package }}
+
+/** {{ project_name }} - {{ description }} */
+object Greeter {
+  val version: String = "{{ version }}"
+
+  /** Greet a name, falling back to "world". */
+  def greet(name: String = "world"): String = {
+    val who = if (name.trim.isEmpty) "world" else name.trim
+    s"Hello, $who!"
+  }
+
+  def add(left: Int, right: Int): Int = left + right
+}

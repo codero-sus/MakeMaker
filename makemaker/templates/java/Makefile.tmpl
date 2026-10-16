@@ -1,0 +1,20 @@
+# {{ project_name }}
+
+MVN ?= mvn
+
+.PHONY: help build test run clean
+
+help:
+	@echo "{{ project_name }} targets: build test run clean"
+
+build:
+	@$(MVN) -q compile
+
+test:
+	@$(MVN) -q test
+
+run:
+	@$(MVN) -q exec:java
+
+clean:
+	@$(MVN) -q clean

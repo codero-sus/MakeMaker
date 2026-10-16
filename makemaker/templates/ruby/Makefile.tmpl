@@ -1,0 +1,23 @@
+# {{ project_name }}
+
+RUBY ?= ruby
+
+.PHONY: help test run lint clean
+
+help:
+	@echo "{{ project_name }} targets: test run lint clean"
+
+test:
+	@$(RUBY) -Ilib -Itest test/test_greeter.rb
+
+run:
+	@$(RUBY) -Ilib bin/{{ bin_name }}
+
+lint:
+	@$(RUBY) -c lib/{{ identifier }}.rb
+	@$(RUBY) -c lib/{{ identifier }}/greeter.rb
+	@$(RUBY) -c bin/{{ bin_name }}
+
+clean:
+	@rm -rf pkg *.gem *.log
+	@echo "cleaned"

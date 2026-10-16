@@ -1,0 +1,32 @@
+{
+  "flavors": [
+    "console"
+  ],
+  "default_flavor": "console",
+  "variables": {
+    "app_name": {
+      "description": "Application name",
+      "default": "{{ project_name }}"
+    },
+    "ocaml_version": {
+      "description": "Minimum OCaml version",
+      "default": "4.14"
+    }
+  },
+  "requires": {
+    "*": [
+      "dune",
+      "ocaml"
+    ]
+  },
+  "rules": [],
+  "notes": "Needs OCaml {{ ocaml_version }}+ and dune. Tests use no external package, so 'dune runtest' works offline.",
+  "id": "ocaml",
+  "display_name": "OCaml project",
+  "summary": "OCaml dune project with a library, executable and tests",
+  "os": "ocaml",
+  "languages": [
+    "ocaml"
+  ],
+  "default_language": "ocaml"
+}

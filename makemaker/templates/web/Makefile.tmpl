@@ -1,0 +1,21 @@
+# {{ project_name }}
+
+.PHONY: help test run lint clean
+
+help:
+	@echo "{{ project_name }} targets: test run lint clean"
+
+test:
+	@node --test
+
+run:
+	@echo "open index.html, or: python3 -m http.server 8000"
+
+lint:
+	@node --check src/{{ identifier }}.js
+	@node --check src/main.js
+	@echo "syntax OK"
+
+clean:
+	@rm -rf dist
+	@echo "cleaned"

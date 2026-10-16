@@ -1,0 +1,6 @@
+*.log
+*.tmp
+.DS_Store
+dist-newstyle/
+*.hi
+*.o

@@ -1,0 +1,18 @@
+-- | {{ project_name }} - {{ description }}
+module {{ class_name }}.Greeter
+  ( version
+  , greet
+  , add
+  ) where
+
+version :: String
+version = "{{ version }}"
+
+-- | Greet a name, falling back to "world" when empty.
+greet :: String -> String
+greet name =
+  let who = if null (words name) then "world" else name
+   in "Hello, " <> who <> "!"
+
+add :: Int -> Int -> Int
+add = (+)

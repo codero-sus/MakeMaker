@@ -1,0 +1,15 @@
+{
+    "name": "{{ org_segment }}/{{ slug }}",
+    "description": "{{ description }}",
+    "type": "project",
+    "license": "MIT",
+    "require": {
+        "php": ">={{ php_version }}"
+    },
+    "autoload": {
+        "psr-4": {
+            "{{ class_name }}\\": "src/"
+        }
+    },
+    "bin": ["bin/{{ bin_name }}.php"]
+}

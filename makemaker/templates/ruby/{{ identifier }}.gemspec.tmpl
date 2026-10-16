@@ -1,0 +1,18 @@
+# frozen_string_literal: true
+
+Gem::Specification.new do |spec|
+  spec.name          = "{{ identifier }}"
+  spec.version       = "{{ version }}"
+  spec.authors       = ["{{ author }}"]
+  spec.email         = ["{{ email }}"]
+
+  spec.summary       = "{{ description }}"
+  spec.homepage      = "{{ domain_url }}"
+  spec.license       = "MIT"
+  spec.required_ruby_version = ">= {{ ruby_version }}"
+
+  spec.files = Dir["lib/**/*.rb", "README.md"]
+  spec.bindir = "bin"
+  spec.executables = ["{{ bin_name }}"]
+  spec.require_paths = ["lib"]
+end

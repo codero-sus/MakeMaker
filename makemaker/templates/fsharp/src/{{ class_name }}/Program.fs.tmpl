@@ -1,0 +1,20 @@
+module {{ class_name }}.Program
+
+open {{ class_name }}
+
+[<EntryPoint>]
+let main argv =
+    match argv with
+    | [| "--version" |] | [| "-V" |] ->
+        printfn "%s" Greeter.version
+        0
+    | [| "--help" |] | [| "-h" |] ->
+        printfn "{{ project_name }} %s" Greeter.version
+        printfn ""
+        printfn "Usage: {{ bin_name }} [name]"
+        printfn "       {{ bin_name }} --version"
+        0
+    | _ ->
+        let name = if argv.Length > 0 then argv.[0] else "world"
+        printfn "%s" (Greeter.greet name)
+        0

@@ -7,9 +7,13 @@ import unittest
 from makemaker.engine import TemplateError
 from makemaker.registry import load_registry, rule_matches, template_root
 
+#: Every target MakeMaker must ship. Other test modules import this so that
+#: adding a template is a one-line change rather than hunting down counts.
 EXPECTED_TARGETS = {
-    "android", "dotnet", "go", "ios", "linux",
-    "macos", "node", "python", "rust", "windows",
+    "android", "bash", "dart", "dotnet", "elixir", "fsharp", "go",
+    "haskell", "ios", "java", "kotlin", "linux", "lua", "macos",
+    "nim", "node", "ocaml", "perl", "php", "powershell", "python",
+    "r", "ruby", "rust", "scala", "web", "windows", "zig",
 }
 
 
@@ -20,7 +24,7 @@ class RegistryTests(unittest.TestCase):
 
     def test_every_expected_template_is_bundled(self):
         self.assertEqual(set(self.registry.ids()), EXPECTED_TARGETS)
-        self.assertEqual(len(self.registry), 10)
+        self.assertEqual(len(self.registry), len(EXPECTED_TARGETS))
 
     def test_every_language_is_spelled_consistently(self):
         """source_ext must know about every language any template offers."""

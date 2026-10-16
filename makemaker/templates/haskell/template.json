@@ -1,0 +1,32 @@
+{
+  "flavors": [
+    "console"
+  ],
+  "default_flavor": "console",
+  "variables": {
+    "app_name": {
+      "description": "Application name",
+      "default": "{{ project_name }}"
+    },
+    "ghc_version": {
+      "description": "Minimum GHC version",
+      "default": "9.0"
+    }
+  },
+  "requires": {
+    "*": [
+      "cabal",
+      "ghc"
+    ]
+  },
+  "rules": [],
+  "notes": "Depends only on base, so 'cabal test' works offline once GHC is installed.",
+  "id": "haskell",
+  "display_name": "Haskell project",
+  "summary": "Cabal package with a library, executable and tests",
+  "os": "haskell",
+  "languages": [
+    "haskell"
+  ],
+  "default_language": "haskell"
+}

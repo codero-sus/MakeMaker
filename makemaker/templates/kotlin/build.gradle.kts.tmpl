@@ -1,0 +1,27 @@
+plugins {
+    kotlin("jvm") version "{{ kotlin_version }}"
+    application
+}
+
+group = "{{ package }}"
+version = "{{ version }}"
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation(kotlin("test"))
+}
+
+application {
+    mainClass.set("{{ package }}.MainKt")
+}
+
+kotlin {
+    jvmToolchain({{ jvm_target }})
+}
+
+tasks.test {
+    useJUnitPlatform()
+}

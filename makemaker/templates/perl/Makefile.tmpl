@@ -1,0 +1,22 @@
+# {{ project_name }}
+
+PERL ?= perl
+
+.PHONY: help test run lint clean
+
+help:
+	@echo "{{ project_name }} targets: test run lint clean"
+
+test:
+	@prove -Ilib t/
+
+run:
+	@$(PERL) -Ilib bin/{{ bin_name }}.pl
+
+lint:
+	@$(PERL) -Ilib -c bin/{{ bin_name }}.pl
+	@$(PERL) -Ilib -c lib/{{ class_name }}.pm
+
+clean:
+	@rm -rf blib Makefile.old *.log
+	@echo "cleaned"

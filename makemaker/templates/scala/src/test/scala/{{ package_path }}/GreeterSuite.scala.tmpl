@@ -1,0 +1,20 @@
+package {{ package }}
+
+class GreeterSuite extends munit.FunSuite {
+
+  test("greets the world") {
+    assertEquals(Greeter.greet(), "Hello, world!")
+  }
+
+  test("greets a given name") {
+    assertEquals(Greeter.greet("Ada"), "Hello, Ada!")
+  }
+
+  test("adds two numbers") {
+    assertEquals(Greeter.add(2, 3), 5)
+  }
+
+  test("exposes a version") {
+    assertEquals(Greeter.version, "{{ version }}")
+  }
+}

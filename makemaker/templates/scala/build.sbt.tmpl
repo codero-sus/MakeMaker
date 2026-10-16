@@ -1,0 +1,13 @@
+// {{ project_name }}
+
+ThisBuild / organization := "{{ package }}"
+ThisBuild / version := "{{ version }}"
+ThisBuild / scalaVersion := "{{ scala_version }}"
+
+lazy val root = (project in file("."))
+  .settings(
+    name := "{{ slug }}",
+    libraryDependencies += "org.scalameta" %% "munit" % "1.0.0" % Test,
+    testFrameworks += new TestFramework("munit.Framework"),
+    Compile / mainClass := Some("{{ package }}.Main")
+  )

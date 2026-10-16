@@ -1,0 +1,31 @@
+package {{ package }};
+
+/**
+ * {{ project_name }} - {{ description }}
+ */
+public final class Greeter {
+
+    public static final String VERSION = "{{ version }}";
+
+    private final String name;
+
+    public Greeter(String name) {
+        this.name = (name == null || name.isEmpty()) ? "world" : name;
+    }
+
+    public Greeter() {
+        this(null);
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String greet() {
+        return String.format("Hello, %s!", name);
+    }
+
+    public static int add(int left, int right) {
+        return left + right;
+    }
+}

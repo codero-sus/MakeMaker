@@ -1,0 +1,19 @@
+#!/usr/bin/env lua
+-- {{ project_name }} - {{ description }}
+
+package.path = "./src/?.lua;" .. package.path
+
+local {{ identifier }} = require("{{ identifier }}")
+
+local arg = arg and arg[1]
+
+if arg == "--version" or arg == "-V" then
+  print({{ identifier }}.version)
+elseif arg == "--help" or arg == "-h" then
+  print(string.format("%s %s", "{{ project_name }}", {{ identifier }}.version))
+  print("")
+  print("Usage: lua main.lua [name]")
+  print("       lua main.lua --version")
+else
+  print({{ identifier }}.greet(arg))
+end

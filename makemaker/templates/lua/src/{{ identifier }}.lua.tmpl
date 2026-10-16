@@ -1,0 +1,22 @@
+-- {{ project_name }} - {{ description }}
+
+local {{ identifier }} = {}
+
+{{ identifier }}.version = "{{ version }}"
+
+-- Return a greeting for name (default "world").
+function {{ identifier }}.greet(name)
+  name = name or "world"
+  return string.format("Hello, %s!", name)
+end
+
+-- Sum every number passed in.
+function {{ identifier }}.sum(...)
+  local total = 0
+  for _, value in ipairs({ ... }) do
+    total = total + value
+  end
+  return total
+end
+
+return {{ identifier }}

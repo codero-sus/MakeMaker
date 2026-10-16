@@ -1,0 +1,21 @@
+# {{ project_name }}
+
+DART ?= dart
+
+.PHONY: help build test run clean
+
+help:
+	@echo "{{ project_name }} targets: build test run clean"
+
+build:
+	@$(DART) pub get
+
+test:
+	@$(DART) test
+
+run:
+	@$(DART) run {{ identifier }}
+
+clean:
+	@rm -rf .dart_tool build
+	@echo "cleaned"

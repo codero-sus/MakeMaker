@@ -1,0 +1,31 @@
+{
+  "flavors": [
+    "console"
+  ],
+  "default_flavor": "console",
+  "variables": {
+    "app_name": {
+      "description": "Application name",
+      "default": "{{ project_name }}"
+    },
+    "lua_version": {
+      "description": "Target Lua version",
+      "default": "5.4"
+    }
+  },
+  "requires": {
+    "*": [
+      "lua"
+    ]
+  },
+  "rules": [],
+  "notes": "No LuaRocks packages and no dependencies; the test runner is a plain Lua script, so any stock Lua {{ lua_version }} interpreter can run it.",
+  "id": "lua",
+  "display_name": "Lua project",
+  "summary": "Lua module with an entry script and a zero-dependency test runner",
+  "os": "lua",
+  "languages": [
+    "lua"
+  ],
+  "default_language": "lua"
+}

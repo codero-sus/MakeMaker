@@ -1,0 +1,8 @@
+defmodule {{ class_name }} do
+  @moduledoc """
+  {{ project_name }} - {{ description }}
+  """
+
+  defdelegate greet(name \\ nil), to: {{ class_name }}.Greeter
+  defdelegate version(), to: {{ class_name }}.Greeter
+end

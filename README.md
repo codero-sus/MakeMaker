@@ -64,7 +64,9 @@ Projects are written to `<--out>/<slug>` (default `--out .`). Passing several
 
 ## Targets
 
-Ten templates, eleven languages:
+Twenty-eight templates, twenty-seven languages:
+
+### Native and mobile
 
 | Target    | Flavours          | Languages       | What you get |
 |-----------|-------------------|-----------------|--------------|
@@ -73,18 +75,47 @@ Ten templates, eleven languages:
 | `windows` | console, gui      | c, cpp (gui: cpp) | Win32 window class + message loop, `.rc` version info, embedded DPI-aware manifest, CMake + MinGW Makefile |
 | `macos`   | console, gui      | c, cpp, swift (gui: objc) | Command line tool in C, C++ or Swift, or an AppKit/ARC app that builds into a real `.app` bundle |
 | `linux`   | console, gui      | c, cpp          | Makefile + CMake, unit test target; GUI flavour uses GTK 4 |
-| `python`  | console           | python          | src-layout package, argparse CLI, `unittest` suite, `pyproject.toml` with a console script |
-| `node`    | console           | typescript, javascript | Zero-dependency ESM CLI using the built-in `node:test` runner; TypeScript runs with no build step |
-| `rust`    | console           | rust            | Cargo lib + bin of the same name, unit tests in `src/lib.rs`, integration tests in `tests/` |
-| `go`      | console           | go              | Go module, table-driven tests, Makefile with `fmt`/`vet` targets |
-| `dotnet`  | console           | csharp          | Solution with a console app and an xUnit test project, top-level statements entry point |
+
+### Languages and runtimes
+
+| Target | Languages | What you get |
+|--------|-----------|--------------|
+| `python` | python | src-layout package, argparse CLI, `unittest` suite, `pyproject.toml` with a console script |
+| `node` | typescript, javascript | Zero-dependency ESM CLI using the built-in `node:test` runner; TypeScript runs with no build step |
+| `rust` | rust | Cargo lib + bin of the same name, unit tests in `src/lib.rs`, integration tests in `tests/` |
+| `go` | go | Go module, table-driven tests, Makefile with `fmt`/`vet` targets |
+| `dotnet` | csharp | Solution with a console app and an xUnit test project, top-level statements entry point |
+| `java` | java | Maven project, JUnit 5 tests, `exec:java` run target |
+| `kotlin` | kotlin | Kotlin JVM app on Gradle Kotlin DSL with `kotlin.test` |
+| `scala` | scala | sbt project with an MUnit suite |
+| `fsharp` | fsharp | F# solution with an xUnit test project |
+| `dart` | dart | Pub package, `package:test` suite, analysis options |
+| `zig` | zig | `build.zig` with library, executable and a `test` step |
+| `nim` | nim | nimble package with built-in `unittest` suite |
+| `haskell` | haskell | Cabal package: library, executable, exitcode-stdio test suite |
+| `ocaml` | ocaml | dune project with library, executable and test stanza |
+| `elixir` | elixir | Mix project with ExUnit tests, no Hex dependencies |
+| `web` | javascript | Static site: HTML, CSS, vanilla ES modules, `node --test` against the logic module |
+
+### Scripting
+
+| Target | Languages | What you get |
+|--------|-----------|--------------|
+| `bash` | bash | Library file, CLI with `--help`/`--version`, Bash-only test runner, `install` target |
+| `perl` | perl | Module + CLI + `Test::More` suite; core modules only |
+| `php` | php | Composer package with PSR-4 autoloading and a runnable test script |
+| `ruby` | ruby | Gem layout, minitest suite, Rakefile |
+| `lua` | lua | Module, entry script and a zero-dependency test runner |
+| `powershell` | powershell | Module manifest + `.psm1` with exported functions and a test script |
+| `r` | r | DESCRIPTION/NAMESPACE package with base-R tests |
 
 Every project also gets a `.gitignore`, a `README.md` describing its own build,
 and `.makemaker/project.json` recording how it was made.
 
-Those ten templates expand to **19 reachable flavour/language combinations**.
-`makemaker template check` renders all 19; add `--all` to also render the 5
-combinations the CLI would reject.
+Those templates expand to **37 reachable flavour/language combinations**.
+`makemaker template check` renders all 37; add `--all` to also render the 5
+combinations the CLI would reject. `makemaker template validate` runs static
+checks over all 28 without generating anything.
 
 Flavour/language combinations that cannot work are rejected rather than
 half-generated -- `--flavor gui --lang cpp` on macOS tells you the GUI flavour
@@ -130,7 +161,7 @@ makemaker/
 native/
 ├── mknative.c       C11: toolchain probe, JSON reader, build driver
 └── Makefile
-tests/               214 unittest cases, standard library only
+tests/               224 unittest cases, standard library only
 ```
 
 ### The template engine
@@ -213,7 +244,7 @@ fails loudly instead of silently doing nothing.
 python3 -m unittest discover -s tests -t . -v
 ```
 
-214 tests, standard library only. They cover the engine (substitution,
+224 tests, standard library only. They cover the engine (substitution,
 expressions, filters, blocks, `{% raw %}`, the bounded compile cache,
 whitespace control, error positions), name and package derivation, registry
 validation, line-ending policy, generation of **every** template in **every**
@@ -233,22 +264,36 @@ Some tests go further and *run* what was generated:
 
 ## What is verified here, and what is not
 
-Verified on Linux (gcc 12, GNU Make 4.3, Python 3.11, Node 22):
+Verified on Linux (gcc 12, GNU Make 4.3, Python 3.11, Node 22, Perl 5.36,
+Bash 5.2):
 
 * Linux console projects in C and C++ build, run and pass their tests.
 * Generated **Python** packages pass `make test`, `make lint`, and run.
 * Generated **Node** projects pass `node --test` and run, in both TypeScript
   (native type stripping, no build step) and JavaScript.
+* Generated **web** projects parse under `node --check` and pass `node --test`.
+* Generated **Bash** projects run and pass their own test runner; the CLI and
+  test scripts are checked for the executable bit.
+* Generated **Perl** projects compile under `perl -c`, run, and pass their
+  `Test::More` suite.
 * `mknative` compiles warning-free and drives those builds end to end.
-* All ten targets generate; no template syntax survives into any output file.
+* All 28 targets generate; no template syntax survives into any output file.
+* Every target has a recipe, and every recipe is a list of argv lists.
 * The generated `.pbxproj` is internally consistent (every object id defined,
   root object present, balanced delimiters, scheme pointing at real targets).
 
-**Not** verified, because the sandbox has no Android SDK, JDK, Gradle, Xcode,
-Windows, GTK, Rust, Go or .NET SDK: that the Android, iOS, Windows, macOS,
-Rust, Go and .NET projects compile, and that the Linux GTK 4 GUI builds. Those
-templates are conventional and structurally checked, but treat the first build
-as the real test and report anything that does not line up.
+**Not** verified here, because this sandbox has no Android SDK, JDK, Gradle,
+Xcode, Windows, GTK, Rust, Go, .NET SDK, JVM toolchains, or the interpreters
+for the remaining languages: that the Android, iOS, Windows, macOS, Rust, Go,
+.NET, Java, Kotlin, Scala, F#, Dart, Zig, Nim, Haskell, OCaml, Elixir, PHP,
+Ruby, Lua, PowerShell and R projects actually compile or pass their tests, and
+that the Linux GTK 4 GUI builds. Those templates render cleanly, pass the
+static checks and follow each ecosystem's conventional layout, but treat the
+first build as the real test and report anything that does not line up.
+
+Where a target needs network access on first use (Maven fetching JUnit, sbt
+fetching MUnit, `dart pub get`, Cargo, Go modules), that is noted in the
+template's own README and in `makemaker info <target>`.
 
 ## License
 

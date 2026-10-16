@@ -1,0 +1,19 @@
+#!/usr/bin/env perl
+# {{ project_name }} - tests
+
+use strict;
+use warnings;
+use Test::More tests => 5;
+use FindBin qw($RealBin);
+use lib "$RealBin/../lib";
+
+use_ok('{{ class_name }}');
+
+my $app = {{ class_name }}->new();
+is($app->greet(), 'Hello, world!', 'greets the world by default');
+
+my $ada = {{ class_name }}->new(name => 'Ada');
+is($ada->greet(), 'Hello, Ada!', 'greets a given name');
+
+is({{ class_name }}->add(2, 3), 5, 'adds two numbers');
+is({{ class_name }}->version(), '{{ version }}', 'reports its version');
