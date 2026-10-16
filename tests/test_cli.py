@@ -107,8 +107,8 @@ class BasicCommandTests(unittest.TestCase):
         # does not silently invalidate this test.
         self.assertGreaterEqual(reachable, len(EXPECTED_TARGETS))
         self.assertGreaterEqual(cross_product, reachable)
-        self.assertEqual(reachable, 37)
-        self.assertEqual(cross_product, 42)
+        self.assertEqual(reachable, 54)
+        self.assertEqual(cross_product, 59)
 
         code, out, _ = run_cli("template", "check")
         self.assertEqual(code, EXIT_OK, out)

@@ -1,0 +1,36 @@
+(ns {{ identifier }}.core
+  "{{ project_name }} - {{ description }}")
+
+(def version
+  "The project version."
+  "{{ version }}")
+
+(defn greet
+  "Greet a name, falling back to "world"."
+  ([] (greet "world"))
+  ([name]
+   (let [who (if (and (string? name) (seq (.trim name))) (.trim name) "world")]
+     (str "Hello, " who "!"))))
+
+(defn add
+  "Add two numbers."
+  [left right]
+  (+ left right))
+
+(defn -main
+  "Entry point for {{ project_name }}."
+  [& args]
+  (let [first-arg (first args)]
+    (cond
+      (or (= first-arg "--version") (= first-arg "-V"))
+      (println version)
+
+      (or (= first-arg "--help") (= first-arg "-h"))
+      (do
+        (println "{{ project_name }}" version)
+        (println)
+        (println "Usage: {{ bin_name }} [name]")
+        (println "       {{ bin_name }} --version"))
+
+      :else
+      (println (greet first-arg)))))

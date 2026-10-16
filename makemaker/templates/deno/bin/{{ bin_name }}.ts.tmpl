@@ -1,0 +1,16 @@
+// {{ project_name }} entry point.
+
+import { VERSION, greet } from "../src/greeter.ts";
+
+const first = Deno.args[0];
+
+if (first === "--version" || first === "-V") {
+  console.log(VERSION);
+} else if (first === "--help" || first === "-h") {
+  console.log(`{{ project_name }} ${VERSION}`);
+  console.log("");
+  console.log("Usage: {{ bin_name }}.ts [name]");
+  console.log("       {{ bin_name }}.ts --version");
+} else {
+  console.log(greet(first));
+}

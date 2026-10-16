@@ -1,0 +1,28 @@
+;;; {{ project_name }} - tests. Exits non-zero on failure.
+
+(import (scheme base) (scheme write) (scheme process-context))
+(include-relative "../lib/greeter.scm")
+
+(define passed 0)
+(define failures 0)
+
+(define (check what expected actual)
+  (if (equal? expected actual)
+      (begin
+        (set! passed (+ passed 1))
+        (display "ok   - ") (display what) (newline))
+      (begin
+        (set! failures (+ failures 1))
+        (display "FAIL - ") (display what) (newline)
+        (display "  expected: ") (write expected) (newline)
+        (display "  actual:   ") (write actual) (newline))))
+
+(check "greets the world" "Hello, world!" (greet "world"))
+(check "greets a name" "Hello, Ada!" (greet "Ada"))
+(check "adds two numbers" 5 (add 2 3))
+(check "reports version" "{{ version }}" version)
+
+(newline)
+(display passed) (display " passed, ") (display failures) (display " failed") (newline)
+
+(exit (if (> failures 0) 1 0))

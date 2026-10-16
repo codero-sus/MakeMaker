@@ -1,0 +1,12 @@
+--  {{ project_name }} - {{ description }}
+package {{ class_name }}.Greeter is
+
+   Version : constant String := "{{ version }}";
+
+   --  Greet a name, falling back to "world".
+   function Greet (Name : String := "world") return String;
+
+   --  Add two numbers.
+   function Add (Left, Right : Integer) return Integer;
+
+end {{ class_name }}.Greeter;

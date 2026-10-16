@@ -1,0 +1,32 @@
+{ {{ project_name }} - {{ description }} }
+unit greeter;
+
+interface
+
+const
+  AppVersion = '{{ version }}';
+
+{ Greet a name, falling back to 'world'. }
+function Greet(const AName: string = 'world'): string;
+
+{ Add two numbers. }
+function Add(ALeft, ARight: Integer): Integer;
+
+implementation
+
+function Greet(const AName: string = 'world'): string;
+var
+  Who: string;
+begin
+  Who := Trim(AName);
+  if Who = '' then
+    Who := 'world';
+  Result := 'Hello, ' + Who + '!';
+end;
+
+function Add(ALeft, ARight: Integer): Integer;
+begin
+  Result := ALeft + ARight;
+end;
+
+end.

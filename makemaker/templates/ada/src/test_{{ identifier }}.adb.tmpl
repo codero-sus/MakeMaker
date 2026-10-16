@@ -1,0 +1,33 @@
+--  {{ project_name }} - tests. Exits non-zero on failure.
+with Ada.Command_Line;
+with Ada.Text_IO;
+with {{ class_name }}.Greeter;
+
+procedure Test_{{ class_name }} is
+   use Ada.Text_IO;
+
+   Failures : Natural := 0;
+
+   procedure Check (What, Expected, Actual : String) is
+   begin
+      if Expected = Actual then
+         Put_Line ("ok   - " & What);
+      else
+         Put_Line ("FAIL - " & What);
+         Put_Line ("  expected: " & Expected);
+         Put_Line ("  actual:   " & Actual);
+         Failures := Failures + 1;
+      end if;
+   end Check;
+
+begin
+   Check ("greets the world", "Hello, world!", {{ class_name }}.Greeter.Greet);
+   Check ("greets a name", "Hello, Ada!", {{ class_name }}.Greeter.Greet ("Ada"));
+   Check ("adds two numbers", "5",
+          Integer'Image ({{ class_name }}.Greeter.Add (2, 3)));
+   Check ("reports version", "{{ version }}", {{ class_name }}.Greeter.Version);
+
+   if Failures > 0 then
+      Ada.Command_Line.Set_Exit_Status (1);
+   end if;
+end Test_{{ class_name }};

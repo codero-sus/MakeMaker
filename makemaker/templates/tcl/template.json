@@ -1,0 +1,40 @@
+{
+  "flavors": [
+    "console"
+  ],
+  "default_flavor": "console",
+  "variables": {
+    "app_name": {
+      "description": "Application name",
+      "default": "{{ project_name }}"
+    },
+    "tcl_version": {
+      "description": "Minimum Tcl version",
+      "default": "8.6"
+    }
+  },
+  "requires": {
+    "*": [
+      "tclsh"
+    ]
+  },
+  "rules": [
+    {
+      "path": "bin/{{ bin_name }}.tcl.tmpl",
+      "executable": true
+    },
+    {
+      "path": "tests/all.tcl.tmpl",
+      "executable": true
+    }
+  ],
+  "notes": "tcltest ships with Tcl, so the suite runs on a stock tclsh with no packages to install.",
+  "id": "tcl",
+  "display_name": "Tcl project",
+  "summary": "Tcl package with a library, CLI and tcltest suite",
+  "os": "tcl",
+  "languages": [
+    "tcl"
+  ],
+  "default_language": "tcl"
+}

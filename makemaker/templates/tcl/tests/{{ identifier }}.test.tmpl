@@ -1,0 +1,34 @@
+# {{ project_name }} - tests.
+
+package require tcltest
+namespace import ::tcltest::*
+
+{# Tcl test syntax wraps the expected value in braces, so build them
+   here rather than writing a literal brace next to a tag. #}
+{% set lb = '{' %}{% set rb = '}' %}
+
+set here [file dirname [file normalize [info script]]]
+source [file join $here .. lib {{ identifier }}.tcl]
+
+test greet-world {greets the world} {
+    ::{{ identifier }}::greet
+} {Hello, world!}
+
+test greet-name {greets a given name} {
+    ::{{ identifier }}::greet Ada
+} {Hello, Ada!}
+
+test greet-blank {falls back when blank} {
+    ::{{ identifier }}::greet "   "
+} {Hello, world!}
+
+test add-numbers {adds two numbers} {
+    ::{{ identifier }}::add 2 3
+} {5}
+
+test version {exposes a version} {
+    ::{{ identifier }}::version
+} {{ lb }}{{ version }}{{ rb }}
+
+::tcltest::cleanupTests
+return

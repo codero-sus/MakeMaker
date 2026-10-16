@@ -1,0 +1,24 @@
+#!/usr/bin/env tclsh
+# {{ project_name }} entry point.
+
+set here [file dirname [file normalize [info script]]]
+source [file join $here .. lib {{ identifier }}.tcl]
+
+set first [lindex $argv 0]
+
+switch -- $first {
+    --version -
+    -V {
+        puts [::{{ identifier }}::version]
+    }
+    --help -
+    -h {
+        puts "{{ project_name }} [::{{ identifier }}::version]"
+        puts ""
+        puts "Usage: {{ bin_name }}.tcl \[name\]"
+        puts "       {{ bin_name }}.tcl --version"
+    }
+    default {
+        puts [::{{ identifier }}::greet $first]
+    }
+}

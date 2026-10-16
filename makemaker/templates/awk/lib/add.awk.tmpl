@@ -1,0 +1,8 @@
+#!/usr/bin/{{ awk_binary }} -f
+# {{ project_name }} - add two numbers.
+#
+# Reads nothing; uses the variables `left` and `right`.
+
+BEGIN {
+    printf "%d\n", left + right
+}

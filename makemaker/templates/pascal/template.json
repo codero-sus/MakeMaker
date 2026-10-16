@@ -1,0 +1,31 @@
+{
+  "flavors": [
+    "console"
+  ],
+  "default_flavor": "console",
+  "variables": {
+    "app_name": {
+      "description": "Application name",
+      "default": "{{ project_name }}"
+    },
+    "fpc_flags": {
+      "description": "Compiler flags",
+      "default": "-Mobjfpc -Sh -O2"
+    }
+  },
+  "requires": {
+    "*": [
+      "fpc"
+    ]
+  },
+  "rules": [],
+  "notes": "Compiled with Free Pascal (fpc). Tests use a hand-rolled runner, so no external unit is required.",
+  "id": "pascal",
+  "display_name": "Pascal project",
+  "summary": "Free Pascal program with a unit and an assertion-based test",
+  "os": "pascal",
+  "languages": [
+    "pascal"
+  ],
+  "default_language": "pascal"
+}

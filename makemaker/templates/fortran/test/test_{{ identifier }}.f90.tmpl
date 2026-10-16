@@ -1,0 +1,47 @@
+! {{ project_name }} - tests. Exits non-zero on failure.
+program test_{{ identifier }}
+  use {{ identifier }}_greeter, only: add, greet, version
+  implicit none
+
+  integer :: failures
+
+  failures = 0
+  call check("greets the world", greet(""), "Hello, world!")
+  call check("greets a name", greet("Ada"), "Hello, Ada!")
+  call check_int("adds two numbers", add(2, 3), 5)
+  call check("reports version", version, "{{ version }}")
+
+  if (failures > 0) then
+    print '(A,I0,A)', "FAILED: ", failures, " check(s)"
+    stop 1
+  end if
+  print '(A)', "all checks passed"
+
+contains
+
+  subroutine check(what, actual, expected)
+    character(len=*), intent(in) :: what, actual, expected
+
+    if (actual == expected) then
+      print '(A,A)', "ok   - ", what
+    else
+      print '(A,A)', "FAIL - ", what
+      print '(A,A)', "  expected: ", expected
+      print '(A,A)', "  actual:   ", actual
+      failures = failures + 1
+    end if
+  end subroutine check
+
+  subroutine check_int(what, actual, expected)
+    character(len=*), intent(in) :: what
+    integer, intent(in) :: actual, expected
+
+    if (actual == expected) then
+      print '(A,A)', "ok   - ", what
+    else
+      print '(A,A)', "FAIL - ", what
+      failures = failures + 1
+    end if
+  end subroutine check_int
+
+end program test_{{ identifier }}

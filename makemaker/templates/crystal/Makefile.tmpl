@@ -1,0 +1,22 @@
+# {{ project_name }}
+
+CRYSTAL ?= crystal
+SHARDS  ?= shards
+
+.PHONY: help build test run clean
+
+help:
+	@echo "{{ project_name }} targets: build test run clean"
+
+build:
+	@$(SHARDS) build
+
+test:
+	@$(CRYSTAL) spec
+
+run:
+	@$(CRYSTAL) run src/{{ bin_name }}.cr
+
+clean:
+	@rm -rf bin lib
+	@echo "cleaned"

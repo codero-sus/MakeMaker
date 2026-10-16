@@ -1,0 +1,31 @@
+{
+  "flavors": [
+    "console"
+  ],
+  "default_flavor": "console",
+  "variables": {
+    "app_name": {
+      "description": "Application name",
+      "default": "{{ project_name }}"
+    },
+    "scheme_impl": {
+      "description": "Scheme implementation",
+      "default": "chicken-csi"
+    }
+  },
+  "requires": {
+    "*": [
+      "csi"
+    ]
+  },
+  "rules": [],
+  "notes": "Portable R7RS with no external libraries; the test harness is a few lines of Scheme and exits non-zero on failure.",
+  "id": "scheme",
+  "display_name": "Scheme project",
+  "summary": "R7RS Scheme library and CLI with a tiny assertion harness",
+  "os": "scheme",
+  "languages": [
+    "scheme"
+  ],
+  "default_language": "scheme"
+}

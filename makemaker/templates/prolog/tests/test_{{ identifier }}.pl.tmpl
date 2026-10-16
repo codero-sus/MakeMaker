@@ -1,0 +1,26 @@
+%! {{ project_name }} - tests.
+
+:- use_module('../lib/greeter').
+:- use_module(library(plunit)).
+
+:- begin_tests({{ identifier }}).
+
+test(greets_the_world) :-
+    greet(Message),
+    assertion(Message == 'Hello, world!').
+
+test(greets_a_given_name) :-
+    greet(ada, Message),
+    assertion(Message == 'Hello, Ada!').
+
+test(adds_two_numbers) :-
+    add(2, 3, Sum),
+    assertion(Sum =:= 5).
+
+test(exposes_a_version) :-
+    version(V),
+    assertion(V == '{{ version }}').
+
+:- end_tests({{ identifier }}).
+
+:- initialization((run_tests -> halt(0) ; halt(1))).

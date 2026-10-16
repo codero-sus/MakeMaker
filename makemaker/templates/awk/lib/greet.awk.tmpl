@@ -1,0 +1,10 @@
+#!/usr/bin/{{ awk_binary }} -f
+# {{ project_name }} - {{ description }}
+#
+# Prints a greeting for the variable `name` (default "world").
+
+BEGIN {
+    version = "{{ version }}"
+    who = (name == "" ) ? "world" : name
+    printf "Hello, %s!\n", who
+}

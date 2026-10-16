@@ -1,0 +1,29 @@
+{ {{ project_name }} entry point. }
+program {{ identifier }}_main;
+
+uses
+  SysUtils, greeter;
+
+var
+  Arg: string;
+begin
+  if ParamCount = 0 then
+  begin
+    WriteLn(Greet);
+    Exit;
+  end;
+
+  Arg := ParamStr(1);
+
+  if (Arg = '--version') or (Arg = '-V') then
+    WriteLn(AppVersion)
+  else if (Arg = '--help') or (Arg = '-h') then
+  begin
+    WriteLn('{{ project_name }} ' + AppVersion);
+    WriteLn('');
+    WriteLn('Usage: {{ bin_name }} [name]');
+    WriteLn('       {{ bin_name }} --version');
+  end
+  else
+    WriteLn(Greet(Arg));
+end.

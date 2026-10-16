@@ -1,0 +1,23 @@
+#!/usr/bin/env groovy
+// {{ project_name }} entry point.
+
+this.class.classLoader.addURL(new File(new File(getClass().protectionDomain
+    .codeSource.location.toURI()).parent, '../src').toURI().toURL())
+
+import {{ identifier }}.Greeter
+
+def first = args.length > 0 ? args[0] : null
+
+switch (first) {
+    case ['--version', '-V']:
+        println Greeter.VERSION
+        break
+    case ['--help', '-h']:
+        println "{{ project_name }} ${Greeter.VERSION}"
+        println ''
+        println 'Usage: {{ bin_name }}.groovy [name]'
+        println '       {{ bin_name }}.groovy --version'
+        break
+    default:
+        println new Greeter(first).greet()
+}

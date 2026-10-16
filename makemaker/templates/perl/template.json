@@ -20,6 +20,10 @@
   },
   "rules": [
     {
+      "path": "t/greeter.t.tmpl",
+      "executable": true
+    },
+    {
       "path": "bin/{{ bin_name }}.pl.tmpl",
       "executable": true
     }

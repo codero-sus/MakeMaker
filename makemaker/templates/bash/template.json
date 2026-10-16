@@ -20,6 +20,10 @@
   },
   "rules": [
     {
+      "path": "lib/{{ identifier }}.sh.tmpl",
+      "executable": true
+    },
+    {
       "path": "bin/{{ bin_name }}.tmpl",
       "executable": true
     },

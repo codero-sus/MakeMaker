@@ -1,0 +1,30 @@
+module {{ class_name }}
+
+# {{ project_name }} - {{ description }}
+
+export greet, add, version
+
+const VERSION_STRING = "{{ version }}"
+
+"""Return the package version."""
+version() = VERSION_STRING
+
+"""
+    greet(name = "world")
+
+Greet a name, falling back to `world` when empty.
+"""
+function greet(name::AbstractString = "world")
+    who = strip(name)
+    isempty(who) && (who = "world")
+    return "Hello, $(who)!"
+end
+
+"""
+    add(left, right)
+
+Add two numbers.
+"""
+add(left, right) = left + right
+
+end

@@ -1,0 +1,15 @@
+#lang racket/base
+
+;; {{ project_name }} entry point.
+
+(require racket/cmdline
+         (only-in "{{ identifier }}/main.rkt" greet version))
+
+(command-line
+ #:program "{{ bin_name }}"
+ #:once-each
+ [("--version") "Print the version"
+                (displayln version)
+                (exit 0)]
+ #:args maybe-name
+ (displayln (greet (if (null? maybe-name) "world" (car maybe-name)))))

@@ -1,0 +1,31 @@
+{
+  "flavors": [
+    "console"
+  ],
+  "default_flavor": "console",
+  "variables": {
+    "app_name": {
+      "description": "Application name",
+      "default": "{{ project_name }}"
+    },
+    "deno_version": {
+      "description": "Minimum Deno version",
+      "default": "1.40"
+    }
+  },
+  "requires": {
+    "*": [
+      "deno"
+    ]
+  },
+  "rules": [],
+  "notes": "No dependencies and no lockfile step: Deno's test runner and type checker are built in, so everything works offline.",
+  "id": "deno",
+  "display_name": "Deno CLI",
+  "summary": "Deno TypeScript CLI with a built-in test suite and no dependencies",
+  "os": "deno",
+  "languages": [
+    "typescript"
+  ],
+  "default_language": "typescript"
+}

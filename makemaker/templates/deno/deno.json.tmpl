@@ -1,0 +1,13 @@
+{
+  "name": "{{ identifier }}",
+  "version": "{{ version }}",
+  "tasks": {
+    "start": "deno run --allow-read bin/{{ bin_name }}.ts",
+    "test": "deno test",
+    "check": "deno check bin/{{ bin_name }}.ts src/greeter.ts",
+    "lint": "deno lint"
+  },
+  "compilerOptions": {
+    "strict": true
+  }
+}

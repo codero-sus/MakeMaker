@@ -223,6 +223,37 @@ class CatchesBugsTest(unittest.TestCase):
             [i.format() for i in issues],
         )
 
+    def test_catches_shebang_script_with_no_executable_rule(self):
+        # This exact mistake has now happened twice (bash, then awk), so it is
+        # checked rather than left to memory.
+        def no_exec_bit(d):
+            (d / "helper.sh.tmpl").write_text(
+                "#!/bin/sh\necho hi\n", encoding="utf-8"
+            )
+
+        issues = mutate("rust", no_exec_bit)
+        self.assertTrue(
+            any("no rule marks it executable" in i.message for i in issues),
+            [i.message for i in issues],
+        )
+
+    def test_shebang_script_with_an_executable_rule_is_fine(self):
+        def with_exec_bit(d):
+            (d / "helper.sh.tmpl").write_text(
+                "#!/bin/sh\necho hi\n", encoding="utf-8"
+            )
+            manifest = manifest_of(d)
+            manifest.setdefault("rules", []).append(
+                {"path": "helper.sh.tmpl", "executable": True}
+            )
+            write_manifest(d, manifest)
+
+        issues = mutate("rust", with_exec_bit)
+        self.assertEqual(
+            [i.format() for i in issues if "executable" in i.message], [],
+            [i.format() for i in issues],
+        )
+
     def test_registry_rejects_malformed_rule_condition_before_lint_runs(self):
         from makemaker.engine import TemplateError
         from makemaker.registry import _load_one

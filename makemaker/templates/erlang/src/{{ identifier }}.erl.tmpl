@@ -1,0 +1,23 @@
+%%% {{ project_name }} entry point.
+-module({{ identifier }}).
+
+-export([main/1]).
+
+-spec main([string()]) -> ok.
+main(["--version"]) ->
+    io:format("~s~n", [{{ identifier }}_greeter:version()]);
+main(["-V"]) ->
+    io:format("~s~n", [{{ identifier }}_greeter:version()]);
+main(["--help"]) ->
+    usage();
+main(["-h"]) ->
+    usage();
+main([]) ->
+    io:format("~s~n", [{{ identifier }}_greeter:greet()]);
+main([Name | _]) ->
+    io:format("~s~n", [{{ identifier }}_greeter:greet(Name)]).
+
+usage() ->
+    io:format("{{ project_name }} ~s~n~n", [{{ identifier }}_greeter:version()]),
+    io:format("Usage: {{ bin_name }} [name]~n", []),
+    io:format("       {{ bin_name }} --version~n", []).

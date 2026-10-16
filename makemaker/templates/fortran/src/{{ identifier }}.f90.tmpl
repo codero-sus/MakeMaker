@@ -1,0 +1,34 @@
+! {{ project_name }} - {{ description }}
+module {{ identifier }}_greeter
+  implicit none
+  private
+
+  public :: version, greet, add
+
+  character(len=*), parameter :: version = "{{ version }}"
+
+contains
+
+  !> Greet a name, falling back to "world".
+  pure function greet(name) result(message)
+    character(len=*), intent(in) :: name
+    character(len=:), allocatable :: message
+    character(len=:), allocatable :: who
+
+    if (len_trim(name) == 0) then
+      who = "world"
+    else
+      who = trim(adjustl(name))
+    end if
+    message = "Hello, " // who // "!"
+  end function greet
+
+  !> Add two numbers.
+  pure function add(left, right) result(total)
+    integer, intent(in) :: left, right
+    integer :: total
+
+    total = left + right
+  end function add
+
+end module {{ identifier }}_greeter

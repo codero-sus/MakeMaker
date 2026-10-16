@@ -1,0 +1,18 @@
+# {{ project_name }}
+
+CSI ?= csi
+
+.PHONY: help test run clean
+
+help:
+	@echo "{{ project_name }} targets: test run clean"
+
+test:
+	@$(CSI) -s tests/test_{{ identifier }}.scm
+
+run:
+	@$(CSI) -s bin/{{ bin_name }}.scm
+
+clean:
+	@rm -f *.log
+	@echo "cleaned"

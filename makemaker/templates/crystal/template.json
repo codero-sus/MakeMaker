@@ -1,0 +1,32 @@
+{
+  "flavors": [
+    "console"
+  ],
+  "default_flavor": "console",
+  "variables": {
+    "app_name": {
+      "description": "Application name",
+      "default": "{{ project_name }}"
+    },
+    "crystal_version": {
+      "description": "Minimum Crystal version",
+      "default": "1.10"
+    }
+  },
+  "requires": {
+    "*": [
+      "crystal",
+      "shards"
+    ]
+  },
+  "rules": [],
+  "notes": "No shard dependencies, so 'shards build' and 'crystal spec' work offline once Crystal is installed.",
+  "id": "crystal",
+  "display_name": "Crystal project",
+  "summary": "Crystal shard with a library, executable and spec suite",
+  "os": "crystal",
+  "languages": [
+    "crystal"
+  ],
+  "default_language": "crystal"
+}

@@ -1,0 +1,21 @@
+# {{ project_name }}
+
+DUB ?= dub
+DC  ?= {{ d_compiler }}
+
+.PHONY: help build test run clean
+
+help:
+	@echo "{{ project_name }} targets: build test run clean"
+
+build:
+	@$(DUB) build --compiler=$(DC)
+
+test:
+	@$(DUB) test --compiler=$(DC)
+
+run:
+	@$(DUB) run --compiler=$(DC)
+
+clean:
+	@$(DUB) clean

@@ -1,0 +1,12 @@
+{:paths ["src" "resources"]
+
+ :deps {}
+
+ :aliases
+ {:run
+  {:main-opts ["-m" "{{ main_ns }}"]}
+
+  :test
+  {:extra-paths ["test"]
+   :main-opts   ["-e" "(require,'{{ identifier }}.test-runner)(clojure.test/run-all-tests)"
+                 "-e" "(System/exit,(if,(clojure.test/successful?),'0,'1))"]}}}

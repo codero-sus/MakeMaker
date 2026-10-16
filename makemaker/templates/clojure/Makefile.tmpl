@@ -1,0 +1,18 @@
+# {{ project_name }}
+
+CLJ ?= clojure
+
+.PHONY: help test run clean
+
+help:
+	@echo "{{ project_name }} targets: test run clean"
+
+test:
+	@$(CLJ) -X:test
+
+run:
+	@$(CLJ) -M -m {{ main_ns }}
+
+clean:
+	@rm -rf .cpcache target
+	@echo "cleaned"

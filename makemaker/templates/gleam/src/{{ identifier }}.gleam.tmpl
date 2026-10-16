@@ -1,0 +1,19 @@
+// {{ project_name }} - {{ description }}
+
+import gleam/string
+
+pub const version: String = "{{ version }}"
+
+/// Greet a name, falling back to "world".
+pub fn greet(name: String) -> String {
+  let who = case string.trim(name) {
+    "" -> "world"
+    trimmed -> trimmed
+  }
+  "Hello, " <> who <> "!"
+}
+
+/// Add two numbers.
+pub fn add(left: Int, right: Int) -> Int {
+  left + right
+}

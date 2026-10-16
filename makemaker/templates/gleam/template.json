@@ -1,0 +1,31 @@
+{
+  "flavors": [
+    "console"
+  ],
+  "default_flavor": "console",
+  "variables": {
+    "app_name": {
+      "description": "Application name",
+      "default": "{{ project_name }}"
+    },
+    "gleam_version": {
+      "description": "Minimum Gleam version",
+      "default": "1.0"
+    }
+  },
+  "requires": {
+    "*": [
+      "gleam"
+    ]
+  },
+  "rules": [],
+  "notes": "Targets the Erlang runtime. 'gleam test' needs gleeunit, which 'gleam deps download' fetches once.",
+  "id": "gleam",
+  "display_name": "Gleam project",
+  "summary": "Gleam project with a library, entry point and gleeunit suite",
+  "os": "gleam",
+  "languages": [
+    "gleam"
+  ],
+  "default_language": "gleam"
+}

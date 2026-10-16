@@ -1,0 +1,37 @@
+{
+  "flavors": [
+    "console"
+  ],
+  "default_flavor": "console",
+  "variables": {
+    "app_name": {
+      "description": "Application name",
+      "default": "{{ project_name }}"
+    },
+    "groovy_version": {
+      "description": "Minimum Groovy version",
+      "default": "4.0"
+    }
+  },
+  "requires": {
+    "*": [
+      "groovy",
+      "java"
+    ]
+  },
+  "rules": [
+    {
+      "path": "bin/{{ bin_name }}.groovy.tmpl",
+      "executable": true
+    }
+  ],
+  "notes": "Tests use Groovy's built-in assert and a non-zero exit on failure, so no Spock or JUnit dependency is required.",
+  "id": "groovy",
+  "display_name": "Groovy project",
+  "summary": "Groovy script project with a class, CLI and built-in assertions",
+  "os": "groovy",
+  "languages": [
+    "groovy"
+  ],
+  "default_language": "groovy"
+}

@@ -1,0 +1,15 @@
+name: {{ identifier }}
+version: {{ version }}
+
+authors:
+  - {{ author }} <{{ email }}>
+
+description: {{ description }}
+
+license: MIT
+
+crystal: '>= {{ crystal_version }}'
+
+targets:
+  {{ bin_name }}:
+    main: src/{{ bin_name }}.cr

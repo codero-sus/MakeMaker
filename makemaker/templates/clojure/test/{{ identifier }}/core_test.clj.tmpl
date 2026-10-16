@@ -1,0 +1,19 @@
+(ns {{ identifier }}.core-test
+  (:require [clojure.test :refer [deftest is testing]]
+            [{{ identifier }}.core :as core]))
+
+(deftest greet-test
+  (testing "greets the world"
+    (is (= "Hello, world!" (core/greet))))
+  (testing "greets a given name"
+    (is (= "Hello, Ada!" (core/greet "Ada"))))
+  (testing "falls back when blank"
+    (is (= "Hello, world!" (core/greet "   ")))))
+
+(deftest add-test
+  (testing "adds two numbers"
+    (is (= 5 (core/add 2 3)))))
+
+(deftest version-test
+  (testing "exposes a version"
+    (is (= "{{ version }}" core/version))))

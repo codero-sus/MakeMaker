@@ -1,0 +1,36 @@
+{
+  "flavors": [
+    "console"
+  ],
+  "default_flavor": "console",
+  "variables": {
+    "app_name": {
+      "description": "Application name",
+      "default": "{{ project_name }}"
+    },
+    "julia_version": {
+      "description": "Minimum Julia version",
+      "default": "1.9"
+    }
+  },
+  "requires": {
+    "*": [
+      "julia"
+    ]
+  },
+  "rules": [
+    {
+      "path": "bin/{{ bin_name }}.jl.tmpl",
+      "executable": true
+    }
+  ],
+  "notes": "Tests use the Test standard library, so 'julia --project -e \"using Pkg; Pkg.test()\"' works with no registry access.",
+  "id": "julia",
+  "display_name": "Julia package",
+  "summary": "Julia package with a module, entry point and Test stdlib suite",
+  "os": "julia",
+  "languages": [
+    "julia"
+  ],
+  "default_language": "julia"
+}

@@ -1,0 +1,19 @@
+# {{ project_name }}
+
+RACKET ?= racket
+RACO   ?= raco
+
+.PHONY: help test run clean
+
+help:
+	@echo "{{ project_name }} targets: test run clean"
+
+test:
+	@$(RACO) test tests/
+
+run:
+	@$(RACKET) bin/{{ bin_name }}.rkt
+
+clean:
+	@rm -rf compiled
+	@echo "cleaned"

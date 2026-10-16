@@ -108,6 +108,22 @@ _SOURCE_EXT = {
     "haskell": "hs",
     "elixir": "ex",
     "java": "java",
+    "julia": "jl",
+    "crystal": "cr",
+    "clojure": "clj",
+    "erlang": "erl",
+    "gleam": "gleam",
+    "fortran": "f90",
+    "racket": "rkt",
+    "tcl": "tcl",
+    "d": "d",
+    "ada": "adb",
+    "pascal": "pas",
+    "groovy": "groovy",
+    "prolog": "pl",
+    "scheme": "scm",
+    "odin": "odin",
+    "awk": "awk",
 }
 
 

@@ -1,0 +1,32 @@
+{
+  "flavors": [
+    "console"
+  ],
+  "default_flavor": "console",
+  "variables": {
+    "app_name": {
+      "description": "Application name",
+      "default": "{{ project_name }}"
+    },
+    "main_ns": {
+      "description": "Main namespace",
+      "default": "{{ identifier }}.core"
+    }
+  },
+  "requires": {
+    "*": [
+      "clojure",
+      "java"
+    ]
+  },
+  "rules": [],
+  "notes": "clojure.test ships with Clojure, so 'clojure -X:test' needs no extra dependencies. A JDK is required.",
+  "id": "clojure",
+  "display_name": "Clojure project",
+  "summary": "deps.edn project with a library, CLI and clojure.test suite",
+  "os": "clojure",
+  "languages": [
+    "clojure"
+  ],
+  "default_language": "clojure"
+}

@@ -1,0 +1,30 @@
+%! {{ project_name }} - {{ description }}
+
+:- module(greeter, [greet/1, greet/2, add/3, version/1]).
+
+%! version(-Version)
+%
+%  The project version.
+version('{{ version }}').
+
+%! greet(-Message)
+%
+%  Greet the default name.
+greet(Message) :-
+    greet(world, Message).
+
+%! greet(+Name, -Message)
+%
+%  Greet Name. An empty or unbound name falls back to `world`.
+greet(Name, Message) :-
+    (   atom(Name), atom_length(Name, L), L > 0
+    ->  Who = Name
+    ;   Who = world
+    ),
+    format(atom(Message), 'Hello, ~w!', [Who]).
+
+%! add(+Left, +Right, -Sum)
+%
+%  Sum is Left plus Right.
+add(Left, Right, Sum) :-
+    Sum is Left + Right.

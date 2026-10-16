@@ -1,0 +1,15 @@
+package body {{ class_name }}.Greeter is
+
+   function Greet (Name : String := "world") return String is
+      Who : constant String :=
+        (if Name'Length = 0 then "world" else Name);
+   begin
+      return "Hello, " & Who & "!";
+   end Greet;
+
+   function Add (Left, Right : Integer) return Integer is
+   begin
+      return Left + Right;
+   end Add;
+
+end {{ class_name }}.Greeter;
