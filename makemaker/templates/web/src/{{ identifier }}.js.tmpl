@@ -1,0 +1,12 @@
+// {{ project_name }} - logic, kept free of any DOM access so Node can test it.
+
+export const VERSION = "{{ version }}";
+
+export function greet(name) {
+  const who = typeof name === "string" && name.trim() !== "" ? name.trim() : "world";
+  return `Hello, ${who}!`;
+}
+
+export function sum(...numbers) {
+  return numbers.reduce((total, value) => total + value, 0);
+}

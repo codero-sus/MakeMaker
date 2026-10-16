@@ -1,0 +1,36 @@
+{
+  "flavors": [
+    "console"
+  ],
+  "default_flavor": "console",
+  "variables": {
+    "app_name": {
+      "description": "Application name",
+      "default": "{{ project_name }}"
+    },
+    "perl_version": {
+      "description": "Minimum Perl version",
+      "default": "5.020"
+    }
+  },
+  "requires": {
+    "*": [
+      "perl"
+    ]
+  },
+  "rules": [
+    {
+      "path": "bin/{{ bin_name }}.pl.tmpl",
+      "executable": true
+    }
+  ],
+  "notes": "Uses only Perl core modules (Test::More, strict, warnings), so 'prove' and 'perl -c' work on a stock install with no CPAN step.",
+  "id": "perl",
+  "display_name": "Perl CLI",
+  "summary": "Perl module with a CLI script and Test::More tests",
+  "os": "perl",
+  "languages": [
+    "perl"
+  ],
+  "default_language": "perl"
+}

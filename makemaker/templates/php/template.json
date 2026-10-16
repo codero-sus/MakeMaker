@@ -1,0 +1,36 @@
+{
+  "flavors": [
+    "console"
+  ],
+  "default_flavor": "console",
+  "variables": {
+    "app_name": {
+      "description": "Application name",
+      "default": "{{ project_name }}"
+    },
+    "php_version": {
+      "description": "Minimum PHP version",
+      "default": "8.1"
+    }
+  },
+  "requires": {
+    "*": [
+      "php"
+    ]
+  },
+  "rules": [
+    {
+      "path": "bin/{{ bin_name }}.php.tmpl",
+      "executable": true
+    }
+  ],
+  "notes": "composer.json declares no dependencies and no required packages, so the project runs with plain 'php' - no 'composer install' needed.",
+  "id": "php",
+  "display_name": "PHP CLI",
+  "summary": "Composer package with PSR-4 autoloading, a CLI entry point and a test script",
+  "os": "php",
+  "languages": [
+    "php"
+  ],
+  "default_language": "php"
+}

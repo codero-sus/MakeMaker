@@ -1,0 +1,31 @@
+{
+  "flavors": [
+    "console"
+  ],
+  "default_flavor": "console",
+  "variables": {
+    "app_name": {
+      "description": "Application name",
+      "default": "{{ project_name }}"
+    },
+    "zig_version": {
+      "description": "Target Zig version",
+      "default": "0.12"
+    }
+  },
+  "requires": {
+    "*": [
+      "zig"
+    ]
+  },
+  "rules": [],
+  "notes": "No dependencies: Zig tests are built into the language, so 'zig build test' works offline.",
+  "id": "zig",
+  "display_name": "Zig project",
+  "summary": "Zig library and executable with built-in tests",
+  "os": "zig",
+  "languages": [
+    "zig"
+  ],
+  "default_language": "zig"
+}

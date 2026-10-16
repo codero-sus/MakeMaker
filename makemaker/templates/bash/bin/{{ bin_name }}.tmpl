@@ -1,0 +1,24 @@
+#!{{ shell }}
+# {{ project_name }} - {{ description }}
+
+set -euo pipefail
+
+here="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=../lib/{{ identifier }}.sh
+. "$here/../lib/{{ identifier }}.sh"
+
+usage() {
+    cat <<USAGE
+{{ project_name }} {{ version }}
+
+Usage: {{ bin_name }} [name...]
+       {{ bin_name }} --version
+       {{ bin_name }} --help
+USAGE
+}
+
+case "${1:-}" in
+    --version|-V) {{ identifier }}_version ;;
+    --help|-h)    usage ;;
+    *)            {{ identifier }}_greet "$@" ;;
+esac

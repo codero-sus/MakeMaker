@@ -1,0 +1,40 @@
+//! {{ project_name }} - {{ description }}
+
+const std = @import("std");
+
+pub const version = "{{ version }}";
+
+/// Greet a name, falling back to "world".
+pub fn greet(allocator: std.mem.Allocator, name: ?[]const u8) ![]u8 {
+    const who = name orelse "world";
+    return std.fmt.allocPrint(allocator, "Hello, {s}!", .{who});
+}
+
+/// Sum a slice of integers.
+pub fn sum(values: []const i64) i64 {
+    var total: i64 = 0;
+    for (values) |value| total += value;
+    return total;
+}
+
+test "greets the world" {
+    const allocator = std.testing.allocator;
+    const message = try greet(allocator, null);
+    defer allocator.free(message);
+    try std.testing.expectEqualStrings("Hello, world!", message);
+}
+
+test "greets a given name" {
+    const allocator = std.testing.allocator;
+    const message = try greet(allocator, "Ada");
+    defer allocator.free(message);
+    try std.testing.expectEqualStrings("Hello, Ada!", message);
+}
+
+test "sums numbers" {
+    try std.testing.expectEqual(@as(i64, 6), sum(&[_]i64{ 1, 2, 3 }));
+}
+
+test "exposes a version" {
+    try std.testing.expectEqualStrings("{{ version }}", version);
+}

@@ -1,0 +1,20 @@
+package {{ package }}
+
+/** Entry point for {{ project_name }}. */
+object Main {
+  def main(args: Array[String]): Unit = {
+    args.headOption match {
+      case Some("--version") | Some("-V") =>
+        println(Greeter.version)
+      case Some("--help") | Some("-h") =>
+        println(s"{{ project_name }} " + Greeter.version)
+        println()
+        println("Usage: {{ bin_name }} [name]")
+        println("       {{ bin_name }} --version")
+      case Some(name) =>
+        println(Greeter.greet(name))
+      case None =>
+        println(Greeter.greet())
+    }
+  }
+}

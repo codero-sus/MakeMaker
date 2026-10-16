@@ -1,0 +1,28 @@
+defmodule {{ class_name }}.Greeter do
+  @moduledoc """
+  {{ project_name }} - {{ description }}
+  """
+
+  @version "{{ version }}"
+
+  @doc "Return the project version."
+  @spec version() :: String.t()
+  def version, do: @version
+
+  @doc "Greet a name; defaults to world."
+  @spec greet(String.t() | nil) :: String.t()
+  def greet(name \\ nil)
+
+  def greet(name) when is_binary(name) do
+    case String.trim(name) do
+      "" -> "Hello, world!"
+      who -> "Hello, " <> who <> "!"
+    end
+  end
+
+  def greet(nil), do: "Hello, world!"
+
+  @doc "Add two numbers."
+  @spec add(number(), number()) :: number()
+  def add(left, right), do: left + right
+end

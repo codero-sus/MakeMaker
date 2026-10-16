@@ -1,0 +1,36 @@
+{
+  "flavors": [
+    "console"
+  ],
+  "default_flavor": "console",
+  "variables": {
+    "app_name": {
+      "description": "Application name",
+      "default": "{{ project_name }}"
+    },
+    "ruby_version": {
+      "description": "Minimum Ruby version",
+      "default": "3.0"
+    }
+  },
+  "requires": {
+    "*": [
+      "ruby"
+    ]
+  },
+  "rules": [
+    {
+      "path": "bin/{{ bin_name }}.tmpl",
+      "executable": true
+    }
+  ],
+  "notes": "Depends only on minitest, which ships with Ruby, so 'rake test' works offline with no 'bundle install'.",
+  "id": "ruby",
+  "display_name": "Ruby CLI",
+  "summary": "Ruby gem layout with a CLI, minitest suite and Rakefile",
+  "os": "ruby",
+  "languages": [
+    "ruby"
+  ],
+  "default_language": "ruby"
+}

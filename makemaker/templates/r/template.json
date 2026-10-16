@@ -1,0 +1,31 @@
+{
+  "flavors": [
+    "console"
+  ],
+  "default_flavor": "console",
+  "variables": {
+    "app_name": {
+      "description": "Application name",
+      "default": "{{ project_name }}"
+    },
+    "r_version": {
+      "description": "Minimum R version",
+      "default": "4.0"
+    }
+  },
+  "requires": {
+    "*": [
+      "Rscript"
+    ]
+  },
+  "rules": [],
+  "notes": "Uses base R only. Tests are plain R scripts driven by stopifnot(), so no testthat package is required.",
+  "id": "r",
+  "display_name": "R package",
+  "summary": "Minimal R package with a function, tests and a DESCRIPTION file",
+  "os": "r",
+  "languages": [
+    "r"
+  ],
+  "default_language": "r"
+}

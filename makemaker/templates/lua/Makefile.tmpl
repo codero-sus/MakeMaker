@@ -1,0 +1,22 @@
+# {{ project_name }}
+
+LUA ?= lua
+
+.PHONY: help test run lint clean
+
+help:
+	@echo "{{ project_name }} targets: test run lint clean"
+
+test:
+	@$(LUA) tests/run.lua
+
+run:
+	@$(LUA) main.lua
+
+lint:
+	@command -v luacheck >/dev/null 2>&1 && luacheck src main.lua tests || \
+		echo "luacheck not installed; skipped"
+
+clean:
+	@rm -f *.log
+	@echo "cleaned"

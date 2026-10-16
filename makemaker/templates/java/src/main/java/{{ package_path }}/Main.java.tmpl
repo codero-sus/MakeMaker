@@ -1,0 +1,23 @@
+package {{ package }};
+
+/** Entry point for {{ project_name }}. */
+public final class Main {
+
+    private Main() {
+    }
+
+    public static void main(String[] args) {
+        if (args.length > 0 && (args[0].equals("--version") || args[0].equals("-V"))) {
+            System.out.println(Greeter.VERSION);
+            return;
+        }
+        if (args.length > 0 && (args[0].equals("--help") || args[0].equals("-h"))) {
+            System.out.println("{{ project_name }} " + Greeter.VERSION);
+            System.out.println();
+            System.out.println("Usage: {{ bin_name }} [name]");
+            System.out.println("       {{ bin_name }} --version");
+            return;
+        }
+        System.out.println(new Greeter(args.length > 0 ? args[0] : null).greet());
+    }
+}

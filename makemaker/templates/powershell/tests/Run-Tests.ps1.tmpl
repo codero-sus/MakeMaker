@@ -1,0 +1,31 @@
+# {{ project_name }} - tests. Exits non-zero on the first failure.
+
+$ErrorActionPreference = 'Stop'
+Import-Module (Join-Path $PSScriptRoot '..' '{{ class_name }}' '{{ class_name }}.psd1') -Force
+
+$passed = 0
+$failures = 0
+
+function Assert-Equal {
+    param([string]$What, $Expected, $Actual)
+
+    if ($Expected -ceq $Actual) {
+        $script:passed++
+        Write-Host "ok   - $What"
+    }
+    else {
+        $script:failures++
+        Write-Host "FAIL - $What"
+        Write-Host "  expected: $Expected"
+        Write-Host "  actual:   $Actual"
+    }
+}
+
+Assert-Equal 'greets the world' 'Hello, world!' (Get-Greeting)
+Assert-Equal 'greets a name' 'Hello, Ada!' (Get-Greeting -Name 'Ada')
+Assert-Equal 'adds two numbers' 5 (Add-Number -Left 2 -Right 3)
+Assert-Equal 'reports version' '{{ version }}' (Get-{{ class_name }}Version)
+
+Write-Host ""
+Write-Host "$passed passed, $failures failed"
+if ($failures -gt 0) { exit 1 } else { exit 0 }

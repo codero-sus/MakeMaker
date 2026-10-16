@@ -1,0 +1,18 @@
+# {{ project_name }}
+
+PWSH ?= pwsh
+
+.PHONY: help test run clean
+
+help:
+	@echo "{{ project_name }} targets: test run clean"
+
+test:
+	@$(PWSH) -File tests/Run-Tests.ps1
+
+run:
+	@$(PWSH) -Command "Import-Module ./{{ class_name }}/{{ class_name }}.psd1; Get-Greeting"
+
+clean:
+	@rm -f *.nupkg
+	@echo "cleaned"

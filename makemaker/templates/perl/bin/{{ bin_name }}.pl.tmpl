@@ -1,0 +1,28 @@
+#!/usr/bin/env perl
+# {{ project_name }} - {{ description }}
+
+use strict;
+use warnings;
+use FindBin qw($RealBin);
+use lib "$RealBin/../lib";
+
+use {{ class_name }};
+
+my $arg = shift @ARGV;
+
+if (defined $arg && ($arg eq '--version' || $arg eq '-V')) {
+    print {{ class_name }}->version(), "\n";
+    exit 0;
+}
+if (defined $arg && ($arg eq '--help' || $arg eq '-h')) {
+    print <<"USAGE";
+{{ project_name }} {{ version }}
+
+Usage: {{ bin_name }}.pl [name]
+       {{ bin_name }}.pl --version
+USAGE
+    exit 0;
+}
+
+my $app = {{ class_name }}->new(name => $arg);
+print $app->greet(), "\n";

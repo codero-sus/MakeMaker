@@ -1,0 +1,21 @@
+# {{ project_name }}
+
+NIMBLE ?= nimble
+
+.PHONY: help build test run clean
+
+help:
+	@echo "{{ project_name }} targets: build test run clean"
+
+build:
+	@$(NIMBLE) build -y
+
+test:
+	@$(NIMBLE) test -y
+
+run:
+	@$(NIMBLE) run -y
+
+clean:
+	@rm -rf nimcache
+	@echo "cleaned"

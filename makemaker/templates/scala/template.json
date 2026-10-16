@@ -1,0 +1,32 @@
+{
+  "flavors": [
+    "console"
+  ],
+  "default_flavor": "console",
+  "variables": {
+    "app_name": {
+      "description": "Application name",
+      "default": "{{ project_name }}"
+    },
+    "scala_version": {
+      "description": "Scala version",
+      "default": "3.3.3"
+    }
+  },
+  "requires": {
+    "*": [
+      "sbt",
+      "java"
+    ]
+  },
+  "rules": [],
+  "notes": "Needs sbt and a JDK. 'sbt test' resolves MUnit on first run, which needs network access once.",
+  "id": "scala",
+  "display_name": "Scala project",
+  "summary": "Scala application built with sbt and tested with MUnit",
+  "os": "scala",
+  "languages": [
+    "scala"
+  ],
+  "default_language": "scala"
+}

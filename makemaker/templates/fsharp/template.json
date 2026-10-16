@@ -1,0 +1,31 @@
+{
+  "flavors": [
+    "console"
+  ],
+  "default_flavor": "console",
+  "variables": {
+    "app_name": {
+      "description": "Application name",
+      "default": "{{ project_name }}"
+    },
+    "target_framework": {
+      "description": "Target framework moniker",
+      "default": "net8.0"
+    }
+  },
+  "requires": {
+    "*": [
+      "dotnet"
+    ]
+  },
+  "rules": [],
+  "notes": "Needs the .NET SDK {{ target_framework }}+. 'dotnet test' restores xUnit on first run, which needs network access once.",
+  "id": "fsharp",
+  "display_name": "F# console",
+  "summary": "F# console application with an xUnit test project",
+  "os": "fsharp",
+  "languages": [
+    "fsharp"
+  ],
+  "default_language": "fsharp"
+}

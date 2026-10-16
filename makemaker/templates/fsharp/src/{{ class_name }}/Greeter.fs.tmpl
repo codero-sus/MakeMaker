@@ -1,0 +1,12 @@
+namespace {{ class_name }}
+
+/// {{ project_name }} - {{ description }}
+module Greeter =
+
+    let version = "{{ version }}"
+
+    let greet (name: string) =
+        let who = if System.String.IsNullOrWhiteSpace(name) then "world" else name
+        sprintf "Hello, %s!" who
+
+    let add (left: int) (right: int) = left + right

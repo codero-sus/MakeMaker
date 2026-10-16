@@ -1,0 +1,22 @@
+# {{ project_name }}
+
+RSCRIPT ?= Rscript
+
+.PHONY: help test run lint clean
+
+help:
+	@echo "{{ project_name }} targets: test run lint clean"
+
+test:
+	@$(RSCRIPT) tests/test_greeter.R
+
+run:
+	@$(RSCRIPT) -e 'source("R/greeter.R"); cat(greet(), "\n")'
+
+lint:
+	@command -v R >/dev/null 2>&1 && R CMD check . --no-manual || \
+		echo "R not installed; skipped"
+
+clean:
+	@rm -rf *.Rcheck .Rhistory .RData
+	@echo "cleaned"

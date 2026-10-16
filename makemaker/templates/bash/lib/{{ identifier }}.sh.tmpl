@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+# {{ project_name }} - library functions.
+
+set -euo pipefail
+
+{{ screaming_name }}_VERSION="{{ version }}"
+
+{{ identifier }}_greet() {
+    if [ "$#" -eq 0 ]; then
+        printf 'Hello, world!\n'
+        return 0
+    fi
+    local name
+    for name in "$@"; do
+        printf 'Hello, %s!\n' "$name"
+    done
+}
+
+{{ identifier }}_add() {
+    printf '%d\n' "$(( $1 + $2 ))"
+}
+
+{{ identifier }}_version() {
+    printf '%s\n' "${{ screaming_name }}_VERSION"
+}

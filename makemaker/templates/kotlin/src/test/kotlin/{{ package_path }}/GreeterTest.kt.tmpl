@@ -1,0 +1,27 @@
+package {{ package }}
+
+import kotlin.test.Test
+import kotlin.test.assertEquals
+
+class GreeterTest {
+
+    @Test
+    fun greetsTheWorld() {
+        assertEquals("Hello, world!", Greeter().greet())
+    }
+
+    @Test
+    fun greetsAGivenName() {
+        assertEquals("Hello, Ada!", Greeter("Ada").greet())
+    }
+
+    @Test
+    fun addsTwoNumbers() {
+        assertEquals(5, Greeter.add(2, 3))
+    }
+
+    @Test
+    fun exposesAVersion() {
+        assertEquals("{{ version }}", Greeter.VERSION)
+    }
+}

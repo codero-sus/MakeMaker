@@ -1,0 +1,31 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types=1);
+
+// {{ project_name }} - {{ description }}
+
+require __DIR__ . '/../src/Greeter.php';
+
+use {{ class_name }}\Greeter;
+
+$argv = $_SERVER['argv'];
+$first = $argv[1] ?? null;
+
+if ($first === '--version' || $first === '-V') {
+    echo Greeter::version(), PHP_EOL;
+    exit(0);
+}
+
+if ($first === '--help' || $first === '-h') {
+    echo <<<USAGE
+    {{ project_name }} {{ version }}
+
+    Usage: {{ bin_name }}.php [name]
+           {{ bin_name }}.php --version
+    USAGE;
+    echo PHP_EOL;
+    exit(0);
+}
+
+echo (new Greeter($first ?? 'world'))->greet(), PHP_EOL;

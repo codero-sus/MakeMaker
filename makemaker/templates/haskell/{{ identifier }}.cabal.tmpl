@@ -1,0 +1,30 @@
+cabal-version:      2.4
+name:               {{ identifier }}
+version:            {{ version }}
+synopsis:           {{ description }}
+author:             {{ author }}
+maintainer:         {{ email }}
+license:            MIT
+build-type:         Simple
+
+library
+    exposed-modules:  {{ class_name }}.Greeter
+    build-depends:    base >=4.14 && <5
+    hs-source-dirs:   src
+    default-language: Haskell2010
+    ghc-options:      -Wall
+
+executable {{ bin_name }}
+    main-is:          Main.hs
+    build-depends:    base >=4.14 && <5, {{ identifier }}
+    hs-source-dirs:   app
+    default-language: Haskell2010
+    ghc-options:      -Wall
+
+test-suite {{ identifier }}-tests
+    type:             exitcode-stdio-1.0
+    main-is:          Spec.hs
+    build-depends:    base >=4.14 && <5, {{ identifier }}
+    hs-source-dirs:   test
+    default-language: Haskell2010
+    ghc-options:      -Wall

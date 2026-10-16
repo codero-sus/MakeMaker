@@ -92,6 +92,22 @@ _SOURCE_EXT = {
     "rust": "rs",
     "go": "go",
     "csharp": "cs",
+    "bash": "sh",
+    "perl": "pl",
+    "php": "php",
+    "ruby": "rb",
+    "lua": "lua",
+    "r": "R",
+    "fsharp": "fs",
+    "ocaml": "ml",
+    "powershell": "ps1",
+    "dart": "dart",
+    "zig": "zig",
+    "nim": "nim",
+    "scala": "scala",
+    "haskell": "hs",
+    "elixir": "ex",
+    "java": "java",
 }
 
 

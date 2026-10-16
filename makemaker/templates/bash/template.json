@@ -1,0 +1,40 @@
+{
+  "flavors": [
+    "console"
+  ],
+  "default_flavor": "console",
+  "variables": {
+    "app_name": {
+      "description": "Application name",
+      "default": "{{ project_name }}"
+    },
+    "shell": {
+      "description": "Interpreter path in the shebang",
+      "default": "/usr/bin/env bash"
+    }
+  },
+  "requires": {
+    "*": [
+      "bash"
+    ]
+  },
+  "rules": [
+    {
+      "path": "bin/{{ bin_name }}.tmpl",
+      "executable": true
+    },
+    {
+      "path": "run-tests.sh.tmpl",
+      "executable": true
+    }
+  ],
+  "notes": "Runs anywhere Bash is available. The test script uses only Bash builtins, so there is nothing to install.",
+  "id": "bash",
+  "display_name": "Bash CLI",
+  "summary": "Portable Bash script with a library file and a test script",
+  "os": "bash",
+  "languages": [
+    "bash"
+  ],
+  "default_language": "bash"
+}

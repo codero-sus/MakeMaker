@@ -1,0 +1,33 @@
+<?php
+
+declare(strict_types=1);
+
+// {{ project_name }} - test runner. Exits non-zero on the first failure.
+
+require __DIR__ . '/../src/Greeter.php';
+
+use {{ class_name }}\Greeter;
+
+$failures = 0;
+$passed = 0;
+
+function check(string $what, mixed $expected, mixed $actual): void
+{
+    global $failures, $passed;
+    if ($expected === $actual) {
+        $passed++;
+        printf("ok   - %s\n", $what);
+        return;
+    }
+    $failures++;
+    printf("FAIL - %s\n  expected: %s\n  actual:   %s\n",
+        $what, var_export($expected, true), var_export($actual, true));
+}
+
+check('greets the world', 'Hello, world!', (new Greeter())->greet());
+check('greets a name', 'Hello, Ada!', (new Greeter('Ada'))->greet());
+check('adds two numbers', 5, Greeter::add(2, 3));
+check('reports version', '{{ version }}', Greeter::version());
+
+printf("\n%d passed, %d failed\n", $passed, $failures);
+exit($failures === 0 ? 0 : 1);

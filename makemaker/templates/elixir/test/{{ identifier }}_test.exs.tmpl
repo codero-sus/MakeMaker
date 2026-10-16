@@ -1,0 +1,21 @@
+defmodule {{ class_name }}Test do
+  use ExUnit.Case, async: true
+
+  alias {{ class_name }}.Greeter
+
+  test "greets the world" do
+    assert Greeter.greet() == "Hello, world!"
+  end
+
+  test "greets a given name" do
+    assert Greeter.greet("Ada") == "Hello, Ada!"
+  end
+
+  test "adds two numbers" do
+    assert Greeter.add(2, 3) == 5
+  end
+
+  test "exposes a version" do
+    assert Greeter.version() == "{{ version }}"
+  end
+end

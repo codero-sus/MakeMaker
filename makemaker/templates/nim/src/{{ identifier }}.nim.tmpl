@@ -1,0 +1,28 @@
+## {{ project_name }} - {{ description }}
+
+const version* = "{{ version }}"
+
+proc greet*(name: string = "world"): string =
+  ## Greet a name, falling back to "world".
+  let who = if name.strip.len == 0: "world" else: name
+  "Hello, " & who & "!"
+
+proc add*(left: int, right: int): int =
+  ## Add two numbers.
+  left + right
+
+when isMainModule:
+  import std/unittest
+
+  suite "{{ class_name }}":
+    test "greets the world":
+      check greet() == "Hello, world!"
+
+    test "greets a given name":
+      check greet("Ada") == "Hello, Ada!"
+
+    test "adds two numbers":
+      check add(2, 3) == 5
+
+    test "exposes a version":
+      check version == "{{ version }}"

@@ -1,0 +1,31 @@
+{
+  "flavors": [
+    "console"
+  ],
+  "default_flavor": "console",
+  "variables": {
+    "app_name": {
+      "description": "Application name",
+      "default": "{{ project_name }}"
+    },
+    "ps_version": {
+      "description": "Minimum PowerShell version",
+      "default": "7.0"
+    }
+  },
+  "requires": {
+    "*": [
+      "pwsh"
+    ]
+  },
+  "rules": [],
+  "notes": "The test script uses only built-in assertions, so it needs no Pester module. Works with PowerShell {{ ps_version }}+ (pwsh).",
+  "id": "powershell",
+  "display_name": "PowerShell module",
+  "summary": "PowerShell module with exported functions and Pester-free tests",
+  "os": "powershell",
+  "languages": [
+    "powershell"
+  ],
+  "default_language": "powershell"
+}

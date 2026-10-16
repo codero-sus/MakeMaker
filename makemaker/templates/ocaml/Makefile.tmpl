@@ -1,0 +1,20 @@
+# {{ project_name }}
+
+DUNE ?= dune
+
+.PHONY: help build test run clean
+
+help:
+	@echo "{{ project_name }} targets: build test run clean"
+
+build:
+	@$(DUNE) build
+
+test:
+	@$(DUNE) runtest
+
+run:
+	@$(DUNE) exec bin/main.exe
+
+clean:
+	@$(DUNE) clean

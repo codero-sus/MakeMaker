@@ -1,0 +1,21 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+
+import { VERSION, greet, sum } from "../src/{{ identifier }}.js";
+
+test("greets the world", () => {
+  assert.equal(greet(), "Hello, world!");
+  assert.equal(greet("   "), "Hello, world!");
+});
+
+test("greets a given name", () => {
+  assert.equal(greet("Ada"), "Hello, Ada!");
+});
+
+test("sums numbers", () => {
+  assert.equal(sum(1, 2, 3), 6);
+});
+
+test("exposes a version", () => {
+  assert.equal(VERSION, "{{ version }}");
+});

@@ -7,13 +7,14 @@ installed, so the suite still runs on a bare machine.
 
 from __future__ import annotations
 
+import os
 import shutil
 import subprocess
 import tempfile
 import unittest
 from pathlib import Path
 
-from makemaker.generator import generate
+from makemaker.generator import generate, read_project_metadata
 from makemaker.recipes import build_commands
 from makemaker.registry import load_registry, resolve_variable_defaults
 from makemaker.variables import build_variables
@@ -21,6 +22,8 @@ from makemaker.variables import build_variables
 HAS_MAKE = shutil.which("make") is not None
 HAS_PYTHON = shutil.which("python3") is not None
 HAS_NODE = shutil.which("node") is not None
+HAS_BASH = shutil.which("bash") is not None
+HAS_PERL = shutil.which("perl") is not None
 
 
 def scaffold(target: str, language: str, destination: Path) -> Path:
@@ -162,6 +165,117 @@ class GeneratedProjectMetadataTests(unittest.TestCase):
                         all(isinstance(part, str) for part in command),
                         f"{template.id}:{action} -> {command!r}",
                     )
+
+
+@unittest.skipUnless(HAS_BASH, "needs bash")
+class GeneratedBashProjectTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.tempdir = tempfile.TemporaryDirectory()
+        cls.project = scaffold("bash", "bash", Path(cls.tempdir.name) / "gen-check")
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.tempdir.cleanup()
+
+    def test_scripts_are_executable(self):
+        for name in ("bin/gen-check", "run-tests.sh"):
+            path = self.project / name
+            self.assertTrue(path.exists(), f"{name} was not generated")
+            self.assertTrue(os.access(path, os.X_OK), f"{name} is not executable")
+
+    def test_the_cli_runs_and_greets(self):
+        completed = subprocess.run(
+            ["./bin/gen-check", "Ada"], cwd=str(self.project),
+            capture_output=True, text=True,
+        )
+        self.assertEqual(completed.returncode, 0, completed.stderr)
+        self.assertIn("Hello, Ada!", completed.stdout)
+
+    def test_its_own_test_suite_passes(self):
+        completed = subprocess.run(
+            ["./run-tests.sh"], cwd=str(self.project),
+            capture_output=True, text=True,
+        )
+        self.assertEqual(completed.returncode, 0, completed.stdout + completed.stderr)
+        self.assertIn("0 failed", completed.stdout)
+
+    def test_recorded_recipe_matches_the_working_command(self):
+        commands = read_project_metadata(self.project)["commands"]
+        self.assertEqual(commands["test"], [["make", "test"]])
+
+
+@unittest.skipUnless(HAS_PERL, "needs perl")
+class GeneratedPerlProjectTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.tempdir = tempfile.TemporaryDirectory()
+        cls.project = scaffold("perl", "perl", Path(cls.tempdir.name) / "gen-check")
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.tempdir.cleanup()
+
+    def test_module_and_script_compile(self):
+        for path in ("lib/GenCheck.pm", "bin/gen-check.pl"):
+            completed = subprocess.run(
+                ["perl", "-Ilib", "-c", path], cwd=str(self.project),
+                capture_output=True, text=True,
+            )
+            self.assertEqual(
+                completed.returncode, 0,
+                f"{path} failed to compile: {completed.stderr}",
+            )
+
+    def test_the_cli_runs_and_greets(self):
+        completed = subprocess.run(
+            ["perl", "-Ilib", "bin/gen-check.pl", "Ada"],
+            cwd=str(self.project), capture_output=True, text=True,
+        )
+        self.assertEqual(completed.returncode, 0, completed.stderr)
+        self.assertIn("Hello, Ada!", completed.stdout)
+
+    def test_the_version_flag_reports_the_project_version(self):
+        completed = subprocess.run(
+            ["perl", "-Ilib", "bin/gen-check.pl", "--version"],
+            cwd=str(self.project), capture_output=True, text=True,
+        )
+        self.assertEqual(completed.stdout.strip(), "0.1.0")
+
+
+@unittest.skipUnless(HAS_NODE, "needs node")
+class GeneratedWebProjectTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.tempdir = tempfile.TemporaryDirectory()
+        cls.project = scaffold("web", "javascript", Path(cls.tempdir.name) / "gen-check")
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.tempdir.cleanup()
+
+    def test_scripts_parse(self):
+        for path in ("src/gen_check.js", "src/main.js"):
+            completed = subprocess.run(
+                ["node", "--check", path], cwd=str(self.project),
+                capture_output=True, text=True,
+            )
+            self.assertEqual(completed.returncode, 0, completed.stderr)
+
+    def test_node_test_suite_passes(self):
+        completed = subprocess.run(
+            ["node", "--test"], cwd=str(self.project),
+            capture_output=True, text=True,
+        )
+        self.assertEqual(completed.returncode, 0, completed.stdout + completed.stderr)
+        self.assertIn("# fail 0", completed.stdout)
+
+    def test_index_html_references_the_generated_assets(self):
+        html = (self.project / "index.html").read_text(encoding="utf-8")
+        self.assertIn("src/main.js", html)
+        self.assertIn("styles/main.css", html)
+        # No template syntax may survive into the page.
+        self.assertNotIn("{{", html)
 
 
 if __name__ == "__main__":

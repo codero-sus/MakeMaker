@@ -1,0 +1,14 @@
+// {{ project_name }} - wiring.
+
+import { greet, VERSION } from "./{{ identifier }}.js";
+
+const form = document.querySelector("#greet-form");
+const input = document.querySelector("#name");
+const output = document.querySelector("#greeting");
+
+form.addEventListener("submit", (event) => {
+  event.preventDefault();
+  output.textContent = greet(input.value);
+});
+
+output.textContent = `${greet()} (v${VERSION})`;

@@ -1,0 +1,27 @@
+-- | Entry point for {{ project_name }}.
+module Main (main) where
+
+import System.Environment (getArgs)
+import {{ class_name }}.Greeter (add, greet, version)
+
+usage :: String
+usage =
+  unlines
+    [ "{{ project_name }} " <> version
+    , ""
+    , "Usage: {{ bin_name }} [name]"
+    , "       {{ bin_name }} --version"
+    ]
+
+main :: IO ()
+main = do
+  args <- getArgs
+  case args of
+    ["--version"] -> putStrLn version
+    ["-V"] -> putStrLn version
+    ["--help"] -> putStr usage
+    ["-h"] -> putStr usage
+    (name : _) -> putStrLn (greet name)
+    [] -> putStrLn (greet "world")
+  -- keep `add` referenced so -Wall does not warn about an unused import
+  seq (add 0 0) (return ())

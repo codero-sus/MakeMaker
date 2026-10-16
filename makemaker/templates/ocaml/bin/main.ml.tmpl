@@ -1,0 +1,13 @@
+(* {{ project_name }} entry point. *)
+
+let usage () =
+  Printf.printf "{{ project_name }} %s\n\n" Greeter.version;
+  Printf.printf "Usage: {{ bin_name }} [name]\n";
+  Printf.printf "       {{ bin_name }} --version\n"
+
+let () =
+  match Sys.argv |> Array.to_list |> List.tl with
+  | ["--version"] | ["-V"] -> Printf.printf "%s\n" Greeter.version
+  | ["--help"] | ["-h"] -> usage ()
+  | name :: _ -> Printf.printf "%s\n" (Greeter.greet name)
+  | [] -> Printf.printf "%s\n" (Greeter.greet "world")

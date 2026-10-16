@@ -1,0 +1,32 @@
+{
+  "flavors": [
+    "console"
+  ],
+  "default_flavor": "console",
+  "variables": {
+    "app_name": {
+      "description": "Application name",
+      "default": "{{ project_name }}"
+    },
+    "nim_version": {
+      "description": "Minimum Nim version",
+      "default": "1.6"
+    }
+  },
+  "requires": {
+    "*": [
+      "nim",
+      "nimble"
+    ]
+  },
+  "rules": [],
+  "notes": "No nimble dependencies, so 'nimble test' and 'nimble build' work offline once Nim is installed.",
+  "id": "nim",
+  "display_name": "Nim project",
+  "summary": "Nim library and executable built with nimble",
+  "os": "nim",
+  "languages": [
+    "nim"
+  ],
+  "default_language": "nim"
+}

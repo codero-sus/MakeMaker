@@ -1,0 +1,25 @@
+# {{ project_name }} - tests. Exits non-zero on failure.
+
+source(file.path("R", "greeter.R"))
+
+passed <- 0L
+failures <- 0L
+
+check <- function(what, expected, actual) {
+  if (isTRUE(all.equal(expected, actual))) {
+    passed <<- passed + 1L
+    cat(sprintf("ok   - %s\n", what))
+  } else {
+    failures <<- failures + 1L
+    cat(sprintf("FAIL - %s\n  expected: %s\n  actual:   %s\n",
+                what, expected, actual))
+  }
+}
+
+check("greets the world", "Hello, world!", greet())
+check("greets a name", "Hello, Ada!", greet("Ada"))
+check("adds two numbers", 5, add(2, 3))
+check("reports version", "{{ version }}", version())
+
+cat(sprintf("\n%d passed, %d failed\n", passed, failures))
+if (failures > 0L) quit(status = 1L)

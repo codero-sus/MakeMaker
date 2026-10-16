@@ -1,0 +1,23 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+# {{ project_name }} - {{ description }}
+
+$LOAD_PATH.unshift(File.expand_path("../lib", __dir__))
+require "{{ identifier }}"
+
+arg = ARGV.first
+
+case arg
+when "--version", "-V"
+  puts {{ class_name }}::VERSION
+when "--help", "-h"
+  puts <<~USAGE
+    {{ project_name }} {{ version }}
+
+    Usage: {{ bin_name }} [name]
+           {{ bin_name }} --version
+  USAGE
+else
+  puts {{ class_name }}::Greeter.new(arg).greet
+end

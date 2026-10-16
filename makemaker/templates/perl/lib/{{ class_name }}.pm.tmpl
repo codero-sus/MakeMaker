@@ -1,0 +1,43 @@
+package {{ class_name }};
+
+# {{ project_name }} - {{ description }}
+
+use strict;
+use warnings;
+
+our $VERSION = '{{ version }}';
+
+sub new {
+    my ($class, %args) = @_;
+    return bless { name => $args{name} // 'world' }, $class;
+}
+
+sub greet {
+    my ($self) = @_;
+    return sprintf 'Hello, %s!', $self->{name};
+}
+
+sub add {
+    my ($class, $left, $right) = @_;
+    return $left + $right;
+}
+
+sub version {
+    return $VERSION;
+}
+
+1;
+
+__END__
+
+=head1 NAME
+
+{{ class_name }} - {{ description }}
+
+=head1 SYNOPSIS
+
+    use {{ class_name }};
+    my $app = {{ class_name }}->new(name => 'Ada');
+    print $app->greet, "\n";
+
+=cut

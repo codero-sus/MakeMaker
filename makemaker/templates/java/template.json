@@ -1,0 +1,36 @@
+{
+  "flavors": [
+    "console"
+  ],
+  "default_flavor": "console",
+  "variables": {
+    "app_name": {
+      "description": "Application name",
+      "default": "{{ project_name }}"
+    },
+    "java_version": {
+      "description": "Java release level",
+      "default": "17"
+    },
+    "junit_version": {
+      "description": "JUnit 5 version",
+      "default": "5.10.2"
+    }
+  },
+  "requires": {
+    "*": [
+      "java",
+      "mvn"
+    ]
+  },
+  "rules": [],
+  "notes": "Needs a JDK and Maven. 'mvn test' downloads JUnit on first run, so it needs network access once.",
+  "id": "java",
+  "display_name": "Java CLI",
+  "summary": "Maven console application with JUnit tests",
+  "os": "java",
+  "languages": [
+    "java"
+  ],
+  "default_language": "java"
+}

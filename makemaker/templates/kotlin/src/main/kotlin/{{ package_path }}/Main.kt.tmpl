@@ -1,0 +1,16 @@
+package {{ package }}
+
+fun usage(): String = listOf(
+    "{{ project_name }} " + Greeter.VERSION,
+    "",
+    "Usage: {{ bin_name }} [name]",
+    "       {{ bin_name }} --version"
+).joinToString("\n")
+
+fun main(args: Array<String>) {
+    when (args.firstOrNull()) {
+        "--version", "-V" -> println(Greeter.VERSION)
+        "--help", "-h" -> println(usage())
+        else -> println(Greeter(args.firstOrNull() ?: "world").greet())
+    }
+}

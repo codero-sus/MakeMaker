@@ -1,0 +1,13 @@
+package {{ package }}
+
+/** {{ project_name }} - {{ description }} */
+class Greeter(private val name: String = "world") {
+
+    fun greet(): String = "Hello, $name!"
+
+    companion object {
+        const val VERSION: String = "{{ version }}"
+
+        fun add(left: Int, right: Int): Int = left + right
+    }
+}
