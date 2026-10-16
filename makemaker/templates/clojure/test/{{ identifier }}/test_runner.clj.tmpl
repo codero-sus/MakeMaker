@@ -1,0 +1,9 @@
+(ns {{ identifier }}.test-runner
+  (:require [clojure.test :as test]
+            [{{ identifier }}.core-test]))
+
+(defn successful?
+  "True when the last run had no failures or errors."
+  []
+  (let [m (test/run-tests '{{ identifier }}.core-test)]
+    (zero? (+ (:fail m) (:error m)))))

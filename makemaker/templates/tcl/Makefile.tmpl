@@ -1,0 +1,21 @@
+# {{ project_name }}
+
+TCLSH ?= tclsh
+
+.PHONY: help test run lint clean
+
+help:
+	@echo "{{ project_name }} targets: test run lint clean"
+
+test:
+	@$(TCLSH) tests/all.tcl
+
+run:
+	@$(TCLSH) bin/{{ bin_name }}.tcl
+
+lint:
+	@$(TCLSH) -c 'exit' 2>/dev/null || echo "tclsh present"
+
+clean:
+	@rm -f *.log
+	@echo "cleaned"

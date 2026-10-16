@@ -1,0 +1,31 @@
+{
+  "flavors": [
+    "console"
+  ],
+  "default_flavor": "console",
+  "variables": {
+    "app_name": {
+      "description": "Application name",
+      "default": "{{ project_name }}"
+    },
+    "d_compiler": {
+      "description": "D compiler to use",
+      "default": "dmd"
+    }
+  },
+  "requires": {
+    "*": [
+      "dub"
+    ]
+  },
+  "rules": [],
+  "notes": "No dub dependencies, so 'dub test' works offline once a D compiler (dmd, ldc2 or gdc) is installed.",
+  "id": "d",
+  "display_name": "D project",
+  "summary": "D application built with dub, with unit tests in-source",
+  "os": "d",
+  "languages": [
+    "d"
+  ],
+  "default_language": "d"
+}

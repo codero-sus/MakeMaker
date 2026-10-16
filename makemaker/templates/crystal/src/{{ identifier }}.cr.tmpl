@@ -1,0 +1,17 @@
+# {{ project_name }} - {{ description }}
+
+module {{ class_name }}
+  VERSION = "{{ version }}"
+
+  # Greet a name, falling back to "world".
+  def self.greet(name : String? = nil) : String
+    who = name.try(&.strip)
+    who = "world" if who.nil? || who.empty?
+    "Hello, #{who}!"
+  end
+
+  # Add two numbers.
+  def self.add(left : Int, right : Int) : Int
+    left + right
+  end
+end

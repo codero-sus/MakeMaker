@@ -254,6 +254,145 @@ def build_commands(template: TemplateDef, context: Dict[str, Any]) -> Dict[str, 
             "clean": [["dune", "clean"]],
         }
 
+    if target == "deno":
+        return {
+            "build": [["deno", "check", f"bin/{bin_name}.ts", "src/greeter.ts"]],
+            "test": [["deno", "test"]],
+            "run": [["deno", "run", "--allow-read", f"bin/{bin_name}.ts"]],
+            "clean": [["rm", "-f", "*.log"]],
+        }
+
+    if target == "awk":
+        return {
+            "build": [["sh", "-c", "exit 0"]],
+            "test": [["./run-tests.sh"]],
+            "run": [["awk", "-f", "lib/greet.awk", "-v", "name=world"]],
+            "clean": [["rm", "-f", "*.log"]],
+        }
+
+    if target == "d":
+        return {
+            "build": [["dub", "build"]],
+            "test": [["dub", "test"]],
+            "run": [["dub", "run"]],
+            "clean": [["dub", "clean"]],
+        }
+
+    if target == "ada":
+        return {
+            "build": [["gprbuild", "-P", f"{bin_name.replace('-', '_')}.gpr"]],
+            "test": [["make", "test"]],
+            "run": [["./bin/main"]],
+            "clean": [["rm", "-rf", "obj", "bin"]],
+        }
+
+    if target == "pascal":
+        return {
+            "build": [["make", "build"]],
+            "test": [["make", "test"]],
+            "run": [["make", "run"]],
+            "clean": [["make", "clean"]],
+        }
+
+    if target == "groovy":
+        return {
+            "build": [["groovy", "-e", "println 'nothing to compile'"]],
+            "test": [["groovy", "tests/GreeterTest.groovy"]],
+            "run": [["groovy", f"bin/{bin_name}.groovy"]],
+            "clean": [["rm", "-rf", "build", ".gradle"]],
+        }
+
+    if target == "prolog":
+        return {
+            "build": [["swipl", "-g", "true", "-t", "halt"]],
+            "test": [["swipl", "-g", "run_tests", "-t", "halt",
+                       f"tests/test_{str(context.get('identifier', 'app'))}.pl"]],
+            "run": [["swipl", f"bin/{bin_name}.pl"]],
+            "clean": [["rm", "-f", "*.log"]],
+        }
+
+    if target == "scheme":
+        ident = str(context.get("identifier", "app"))
+        return {
+            "build": [["csi", "-e", "(exit 0)"]],
+            "test": [["csi", "-s", f"tests/test_{ident}.scm"]],
+            "run": [["csi", "-s", f"bin/{bin_name}.scm"]],
+            "clean": [["rm", "-f", "*.log"]],
+        }
+
+    if target == "odin":
+        return {
+            "build": [["odin", "build", "src", f"-out:{bin_name}"]],
+            "test": [["odin", "test", "src"]],
+            "run": [["odin", "run", "src"]],
+            "clean": [["rm", "-f", bin_name]],
+        }
+
+    if target == "julia":
+        return {
+            "build": [["julia", "--project=.", "-e", 'using Pkg; Pkg.instantiate()']],
+            "test": [["julia", "--project=.", "-e", "using Pkg; Pkg.test()"]],
+            "run": [["julia", "--project=.", f"bin/{bin_name}.jl"]],
+            "clean": [["rm", "-f", "*.jl.cov", "*.jl.mem"]],
+        }
+
+    if target == "crystal":
+        return {
+            "build": [["shards", "build"]],
+            "test": [["crystal", "spec"]],
+            "run": [["crystal", "run", f"src/{bin_name}.cr"]],
+            "clean": [["rm", "-rf", "bin", "lib"]],
+        }
+
+    if target == "clojure":
+        main_ns = f"{str(context.get('identifier', 'app'))}.core"
+        return {
+            "build": [["clojure", "-P"]],
+            "test": [["clojure", "-X:test"]],
+            "run": [["clojure", "-M", "-m", main_ns]],
+            "clean": [["rm", "-rf", ".cpcache", "target"]],
+        }
+
+    if target == "erlang":
+        return {
+            "build": [["rebar3", "compile"]],
+            "test": [["rebar3", "eunit"]],
+            "run": [["rebar3", "escriptize"]],
+            "clean": [["rebar3", "clean"]],
+        }
+
+    if target == "gleam":
+        return {
+            "build": [["gleam", "build"]],
+            "test": [["gleam", "test"]],
+            "run": [["gleam", "run"]],
+            "clean": [["rm", "-rf", "build"]],
+        }
+
+    if target == "fortran":
+        return {
+            "build": [["fpm", "build"]],
+            "test": [["fpm", "test"]],
+            "run": [["fpm", "run", bin_name]],
+            "clean": [["rm", "-rf", "build"]],
+        }
+
+    if target == "racket":
+        return {
+            "build": [["racket", "-e", '(displayln "nothing to compile")']],
+            "test": [["raco", "test", "tests/"]],
+            "run": [["racket", f"bin/{bin_name}.rkt"]],
+            "clean": [["rm", "-rf", "compiled"]],
+        }
+
+    if target == "tcl":
+        return {
+            "build": [["tclsh", "-e", "exit 0"]],
+            "test": [["tclsh", "tests/all.tcl"]],
+            "run": [["tclsh", f"bin/{bin_name}.tcl"]],
+            "clean": [["rm", "-f", "*.log"]],
+        }
+
     if target == "r":
         return {
             "build": [["Rscript", "-e", 'cat("nothing to compile\\n")']],

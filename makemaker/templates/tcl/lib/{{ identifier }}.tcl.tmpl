@@ -1,0 +1,28 @@
+# {{ project_name }} - {{ description }}
+
+package provide {{ identifier }} {{ version }}
+
+namespace eval ::{{ identifier }} {
+    variable version "{{ version }}"
+    namespace export greet add version
+}
+
+# Greet a name, falling back to "world".
+proc ::{{ identifier }}::greet {name {}} {
+    set who [string trim $name]
+    if {$who eq ""} {
+        set who "world"
+    }
+    return "Hello, $who!"
+}
+
+# Add two numbers.
+proc ::{{ identifier }}::add {left right} {
+    return [expr {$left + $right}]
+}
+
+# Package version.
+proc ::{{ identifier }}::version {} {
+    variable version
+    return $version
+}

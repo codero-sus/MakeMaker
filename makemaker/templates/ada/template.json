@@ -1,0 +1,32 @@
+{
+  "flavors": [
+    "console"
+  ],
+  "default_flavor": "console",
+  "variables": {
+    "app_name": {
+      "description": "Application name",
+      "default": "{{ project_name }}"
+    },
+    "ada_standard": {
+      "description": "Language standard",
+      "default": "Ada2012"
+    }
+  },
+  "requires": {
+    "*": [
+      "gprbuild",
+      "gnatmake"
+    ]
+  },
+  "rules": [],
+  "notes": "Built with gprbuild. Tests use Ada assertions and a non-zero exit on failure, so no external test framework is needed.",
+  "id": "ada",
+  "display_name": "Ada project",
+  "summary": "Alire/ GNAT project with a library and an assertion-based test",
+  "os": "ada",
+  "languages": [
+    "ada"
+  ],
+  "default_language": "ada"
+}

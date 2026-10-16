@@ -1,0 +1,15 @@
+# {{ project_name }} entry point.
+
+require "./{{ identifier }}"
+
+case ARGV.first?
+when "--version", "-V"
+  puts {{ class_name }}::VERSION
+when "--help", "-h"
+  puts "{{ project_name }} #{ {{ class_name }}::VERSION }"
+  puts
+  puts "Usage: {{ bin_name }} [name]"
+  puts "       {{ bin_name }} --version"
+else
+  puts {{ class_name }}.greet(ARGV.first?)
+end

@@ -1,0 +1,42 @@
+// {{ project_name }} - {{ description }}
+package {{ identifier }}
+
+import "core:fmt"
+import "core:strings"
+import "core:testing"
+
+version :: "{{ version }}"
+
+// Greet a name, falling back to "world".
+greet :: proc(name: string = "world") -> string {
+    who := strings.trim_space(name)
+    if len(who) == 0 {
+        who = "world"
+    }
+    return fmt.tprintf("Hello, %v!", who)
+}
+
+// Add two numbers.
+add :: proc(left, right: int) -> int {
+    return left + right
+}
+
+@(test)
+test_greets_the_world :: proc(t: ^testing.T) {
+    testing.expect_value(t, greet(), "Hello, world!")
+}
+
+@(test)
+test_greets_a_given_name :: proc(t: ^testing.T) {
+    testing.expect_value(t, greet("Ada"), "Hello, Ada!")
+}
+
+@(test)
+test_adds_two_numbers :: proc(t: ^testing.T) {
+    testing.expect_value(t, add(2, 3), 5)
+}
+
+@(test)
+test_exposes_a_version :: proc(t: ^testing.T) {
+    testing.expect_value(t, version, "{{ version }}")
+}

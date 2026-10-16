@@ -1,0 +1,28 @@
+/// {{ project_name }} entry point.
+module app;
+
+import greeter;
+import std.stdio : writeln;
+
+void main(string[] args) {
+    if (args.length > 1) {
+        switch (args[1]) {
+            case "--version":
+            case "-V":
+                writeln(version_);
+                return;
+            case "--help":
+            case "-h":
+                writeln("{{ project_name }} ", version_);
+                writeln();
+                writeln("Usage: {{ bin_name }} [name]");
+                writeln("       {{ bin_name }} --version");
+                return;
+            default:
+                break;
+        }
+        writeln(greet(args[1]));
+        return;
+    }
+    writeln(greet());
+}

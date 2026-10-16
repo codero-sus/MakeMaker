@@ -18,7 +18,16 @@
       "lua"
     ]
   },
-  "rules": [],
+  "rules": [
+    {
+      "path": "main.lua.tmpl",
+      "executable": true
+    },
+    {
+      "path": "tests/run.lua.tmpl",
+      "executable": true
+    }
+  ],
   "notes": "No LuaRocks packages and no dependencies; the test runner is a plain Lua script, so any stock Lua {{ lua_version }} interpreter can run it.",
   "id": "lua",
   "display_name": "Lua project",

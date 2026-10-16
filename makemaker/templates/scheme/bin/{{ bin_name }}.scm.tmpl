@@ -1,0 +1,18 @@
+;;; {{ project_name }} entry point.
+
+(import (scheme base) (scheme write) (scheme process-context))
+(include-relative "../lib/greeter.scm")
+
+(let ((args (command-line)))
+  (cond
+    ((null? (cdr args))
+     (display (greet "world")) (newline))
+    ((member (cadr args) '("--version" "-V"))
+     (display version) (newline))
+    ((member (cadr args) '("--help" "-h"))
+     (display "{{ project_name }} ") (display version) (newline)
+     (newline)
+     (display "Usage: {{ bin_name }}.scm [name]") (newline)
+     (display "       {{ bin_name }}.scm --version") (newline))
+    (else
+     (display (greet (cadr args))) (newline))))

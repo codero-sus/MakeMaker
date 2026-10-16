@@ -1,0 +1,22 @@
+#!/bin/sh
+# {{ project_name }} - {{ description }}
+
+here="$(cd "$(dirname "$0")" && pwd)"
+AWK="{{ awk_binary }}"
+
+case "${1:-}" in
+    --version|-V)
+        printf '%s\n' "{{ version }}"
+        ;;
+    --help|-h)
+        cat <<USAGE
+{{ project_name }} {{ version }}
+
+Usage: {{ bin_name }} [name]
+       {{ bin_name }} --version
+USAGE
+        ;;
+    *)
+        "$AWK" -f "$here/../lib/greet.awk" -v name="${1:-world}" </dev/null
+        ;;
+esac

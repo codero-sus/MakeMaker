@@ -124,6 +124,40 @@ def _check_templates_parse(
     return issues
 
 
+#: A file that starts with a shebang is meant to be executed directly.
+SHEBANG = "#!"
+
+
+def _check_executable_bits(template: TemplateDef) -> List[Issue]:
+    """Flag shell-style scripts that no rule marks executable.
+
+    Without the exec bit the generated file cannot be run as ``./script``,
+    which is exactly how every README and recipe invokes it. This has bitten
+    twice already, so it is checked rather than remembered.
+    """
+    issues: List[Issue] = []
+    for path in template.files():
+        rel = path.relative_to(template.directory).as_posix()
+        if rel == MANIFEST_NAME:
+            continue
+        try:
+            head = path.read_text(encoding="utf-8", errors="ignore")[:2]
+        except OSError:
+            continue
+        if head != SHEBANG:
+            continue
+        rule = template.rule_for(rel)
+        if rule is not None and (rule.executable or rule.mode):
+            continue
+        issues.append(Issue(
+            template.id,
+            "starts with a shebang but no rule marks it executable; add "
+            '{"path": ..., "executable": true}',
+            rel,
+        ))
+    return issues
+
+
 def _check_rules_reach_something(template: TemplateDef, relative: List[str]) -> List[Issue]:
     issues: List[Issue] = []
     for rule in template.rules:
@@ -245,6 +279,7 @@ def validate_template(template: TemplateDef) -> List[Issue]:
     issues += _check_templates_parse(template, files, relative)
     issues += _check_rules_reach_something(template, relative)
     issues += _check_shadowed_rules(template, relative)
+    issues += _check_executable_bits(template)
     issues += _check_combinations(template)
 
     unique: List[Issue] = []

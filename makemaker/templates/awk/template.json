@@ -1,0 +1,49 @@
+{
+  "flavors": [
+    "console"
+  ],
+  "default_flavor": "console",
+  "variables": {
+    "app_name": {
+      "description": "Application name",
+      "default": "{{ project_name }}"
+    },
+    "awk_binary": {
+      "description": "AWK implementation",
+      "default": "awk"
+    }
+  },
+  "requires": {
+    "*": [
+      "awk",
+      "sh"
+    ]
+  },
+  "rules": [
+    {
+      "path": "lib/add.awk.tmpl",
+      "executable": true
+    },
+    {
+      "path": "lib/greet.awk.tmpl",
+      "executable": true
+    },
+    {
+      "path": "bin/{{ bin_name }}.tmpl",
+      "executable": true
+    },
+    {
+      "path": "run-tests.sh.tmpl",
+      "executable": true
+    }
+  ],
+  "notes": "Uses only POSIX awk constructs, so it runs under mawk, gawk and BusyBox awk alike. The test runner is a plain shell script.",
+  "id": "awk",
+  "display_name": "AWK toolkit",
+  "summary": "AWK scripts with a shell test runner; POSIX awk only",
+  "os": "awk",
+  "languages": [
+    "awk"
+  ],
+  "default_language": "awk"
+}

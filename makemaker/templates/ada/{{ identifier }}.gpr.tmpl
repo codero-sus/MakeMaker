@@ -1,0 +1,12 @@
+project {{ class_name }} is
+
+   for Main use ("main.adb", "test_{{ identifier }}.adb");
+   for Object_Dir use "obj";
+   for Exec_Dir use "bin";
+   for Source_Dirs use ("src");
+
+   package Compiler is
+      for Default_Switches ("Ada") use ("-gnatwa", "-gnata", "-g", "-O0");
+   end Compiler;
+
+end {{ class_name }};

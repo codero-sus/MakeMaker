@@ -1,0 +1,23 @@
+# {{ project_name }}
+
+FPC    ?= fpc
+FLAGS  := {{ fpc_flags }}
+
+.PHONY: help build test run clean
+
+help:
+	@echo "{{ project_name }} targets: build test run clean"
+
+build:
+	@$(FPC) $(FLAGS) -FEbuild src/{{ bin_name }}.pas
+
+test:
+	@$(FPC) $(FLAGS) -FEbuild tests/test_greeter.pas
+	@./build/test_greeter
+
+run:
+	@./build/{{ bin_name }}
+
+clean:
+	@rm -rf build *.o *.ppu
+	@echo "cleaned"

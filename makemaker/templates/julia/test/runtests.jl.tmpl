@@ -1,0 +1,18 @@
+using {{ class_name }}
+using Test
+
+@testset "{{ class_name }}" begin
+    @testset "greet" begin
+        @test greet() == "Hello, world!"
+        @test greet("   ") == "Hello, world!"
+        @test greet("Ada") == "Hello, Ada!"
+    end
+
+    @testset "add" begin
+        @test add(2, 3) == 5
+    end
+
+    @testset "version" begin
+        @test version() == "{{ version }}"
+    end
+end

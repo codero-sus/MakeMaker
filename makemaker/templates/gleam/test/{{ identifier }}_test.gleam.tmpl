@@ -1,0 +1,23 @@
+import gleeunit
+import gleeunit/should
+import {{ identifier }}
+
+pub fn main() {
+  gleeunit.main()
+}
+
+pub fn greets_the_world_test() {
+  {{ identifier }}.greet("world") |> should.equal("Hello, world!")
+}
+
+pub fn greets_a_given_name_test() {
+  {{ identifier }}.greet("Ada") |> should.equal("Hello, Ada!")
+}
+
+pub fn adds_two_numbers_test() {
+  {{ identifier }}.add(2, 3) |> should.equal(5)
+}
+
+pub fn exposes_a_version_test() {
+  {{ identifier }}.version |> should.equal("{{ version }}")
+}

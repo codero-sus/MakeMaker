@@ -1,0 +1,26 @@
+// {{ project_name }} entry point.
+package {{ identifier }}
+
+import "core:fmt"
+import "core:os"
+
+main :: proc() {
+    args := os.args
+
+    if len(args) < 2 {
+        fmt.println(greet())
+        return
+    }
+
+    switch args[1] {
+    case "--version", "-V":
+        fmt.println(version)
+    case "--help", "-h":
+        fmt.println("{{ project_name }}", version)
+        fmt.println()
+        fmt.println("Usage: {{ bin_name }} [name]")
+        fmt.println("       {{ bin_name }} --version")
+    case:
+        fmt.println(greet(args[1]))
+    }
+}

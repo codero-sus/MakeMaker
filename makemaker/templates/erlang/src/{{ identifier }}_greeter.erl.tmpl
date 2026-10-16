@@ -1,0 +1,24 @@
+%%% {{ project_name }} - {{ description }}
+-module({{ identifier }}_greeter).
+
+-export([greet/0, greet/1, add/2, version/0]).
+
+-spec version() -> string().
+version() -> "{{ version }}".
+
+%% @doc Greet a name, falling back to "world".
+-spec greet() -> string().
+greet() -> greet("world").
+
+-spec greet(string() | undefined) -> string().
+greet(undefined) -> greet("world");
+greet(Name) ->
+    Who = case string:trim(Name) of
+              "" -> "world";
+              Trimmed -> Trimmed
+          end,
+    "Hello, " ++ Who ++ "!".
+
+%% @doc Add two numbers.
+-spec add(number(), number()) -> number().
+add(Left, Right) -> Left + Right.

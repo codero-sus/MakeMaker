@@ -1,0 +1,21 @@
+# {{ project_name }}
+
+FPM ?= fpm
+
+.PHONY: help build test run clean
+
+help:
+	@echo "{{ project_name }} targets: build test run clean"
+
+build:
+	@$(FPM) build
+
+test:
+	@$(FPM) test
+
+run:
+	@$(FPM) run {{ bin_name }}
+
+clean:
+	@rm -rf build
+	@echo "cleaned"

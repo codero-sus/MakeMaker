@@ -1,0 +1,21 @@
+/// {{ project_name }} - {{ description }}
+module greeter;
+
+enum version_ = "{{ version }}";
+
+/// Greet a name, falling back to "world".
+string greet(string name = "world") pure nothrow {
+    return "Hello, " ~ name ~ "!";
+}
+
+/// Add two numbers.
+int add(int left, int right) pure nothrow {
+    return left + right;
+}
+
+unittest {
+    assert(greet() == "Hello, world!");
+    assert(greet("Ada") == "Hello, Ada!");
+    assert(add(2, 3) == 5);
+    assert(version_ == "{{ version }}");
+}

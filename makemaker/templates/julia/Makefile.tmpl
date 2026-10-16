@@ -1,0 +1,18 @@
+# {{ project_name }}
+
+JULIA ?= julia
+
+.PHONY: help test run clean
+
+help:
+	@echo "{{ project_name }} targets: test run clean"
+
+test:
+	@$(JULIA) --project=. -e 'using Pkg; Pkg.test()'
+
+run:
+	@$(JULIA) --project=. bin/{{ bin_name }}.jl
+
+clean:
+	@rm -f *.jl.cov *.jl.mem
+	@echo "cleaned"

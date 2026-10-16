@@ -1,0 +1,18 @@
+# {{ project_name }}
+
+GROOVY ?= groovy
+
+.PHONY: help test run clean
+
+help:
+	@echo "{{ project_name }} targets: test run clean"
+
+test:
+	@$(GROOVY) tests/GreeterTest.groovy
+
+run:
+	@$(GROOVY) bin/{{ bin_name }}.groovy
+
+clean:
+	@rm -rf build .gradle
+	@echo "cleaned"

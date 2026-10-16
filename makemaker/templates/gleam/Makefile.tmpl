@@ -1,0 +1,21 @@
+# {{ project_name }}
+
+GLEAM ?= gleam
+
+.PHONY: help build test run clean
+
+help:
+	@echo "{{ project_name }} targets: build test run clean"
+
+build:
+	@$(GLEAM) build
+
+test:
+	@$(GLEAM) test
+
+run:
+	@$(GLEAM) run
+
+clean:
+	@rm -rf build
+	@echo "cleaned"

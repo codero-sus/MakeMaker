@@ -1,0 +1,27 @@
+{
+  "flavors": [
+    "console"
+  ],
+  "default_flavor": "console",
+  "variables": {
+    "app_name": {
+      "description": "Application name",
+      "default": "{{ project_name }}"
+    }
+  },
+  "requires": {
+    "*": [
+      "odin"
+    ]
+  },
+  "rules": [],
+  "notes": "Tests use Odin's built-in `@(test)` procedure and 'odin test', so there are no dependencies to fetch.",
+  "id": "odin",
+  "display_name": "Odin project",
+  "summary": "Odin package with a library, entry point and built-in tests",
+  "os": "odin",
+  "languages": [
+    "odin"
+  ],
+  "default_language": "odin"
+}

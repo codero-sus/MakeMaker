@@ -1,0 +1,14 @@
+// {{ project_name }} - {{ description }}
+
+export const VERSION: string = "{{ version }}";
+
+/** Greet a name, falling back to "world". */
+export function greet(name?: string): string {
+  const who = name?.trim();
+  return `Hello, ${who ? who : "world"}!`;
+}
+
+/** Sum every number passed in. */
+export function sum(...numbers: number[]): number {
+  return numbers.reduce((total, value) => total + value, 0);
+}

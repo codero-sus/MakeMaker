@@ -1,0 +1,27 @@
+{
+  "flavors": [
+    "console"
+  ],
+  "default_flavor": "console",
+  "variables": {
+    "app_name": {
+      "description": "Application name",
+      "default": "{{ project_name }}"
+    }
+  },
+  "requires": {
+    "*": [
+      "swipl"
+    ]
+  },
+  "rules": [],
+  "notes": "plunit ships with SWI-Prolog, so the suite runs with no packs installed.",
+  "id": "prolog",
+  "display_name": "Prolog project",
+  "summary": "SWI-Prolog project with a module and a plunit test suite",
+  "os": "prolog",
+  "languages": [
+    "prolog"
+  ],
+  "default_language": "prolog"
+}

@@ -1,0 +1,19 @@
+;;; {{ project_name }} - {{ description }}
+
+(define-library ({{ identifier }} greeter)
+  (export greet add version)
+  (import (scheme base) (scheme write))
+
+  (begin
+    (define version "{{ version }}")
+
+    ;; Greet a name, falling back to "world".
+    (define (greet name)
+      (let ((who (if (and (string? name) (> (string-length name) 0))
+                     name
+                     "world")))
+        (string-append "Hello, " who "!")))
+
+    ;; Add two numbers.
+    (define (add left right)
+      (+ left right))))

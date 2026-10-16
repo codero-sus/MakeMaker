@@ -1,0 +1,24 @@
+#!/usr/bin/env julia
+# {{ project_name }} entry point.
+
+using Pkg
+Pkg.activate(dirname(@__DIR__))
+
+using {{ class_name }}: greet, version
+
+function main(args)
+    if isempty(args)
+        println(greet())
+    elseif args[1] in ("--version", "-V")
+        println(version())
+    elseif args[1] in ("--help", "-h")
+        println("{{ project_name }} ", version())
+        println()
+        println("Usage: {{ bin_name }}.jl [name]")
+        println("       {{ bin_name }}.jl --version")
+    else
+        println(greet(args[1]))
+    end
+end
+
+main(ARGS)

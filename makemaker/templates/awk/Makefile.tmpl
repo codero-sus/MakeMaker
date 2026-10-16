@@ -1,0 +1,22 @@
+# {{ project_name }}
+
+AWK ?= {{ awk_binary }}
+
+.PHONY: help test run lint clean
+
+help:
+	@echo "{{ project_name }} targets: test run lint clean"
+
+test:
+	@./run-tests.sh
+
+run:
+	@$(AWK) -f lib/greet.awk -v name=Ada </dev/null
+
+lint:
+	@command -v gawk >/dev/null 2>&1 && gawk --lint -f lib/greet.awk </dev/null || \
+		echo "gawk not installed; lint skipped"
+
+clean:
+	@rm -f *.log
+	@echo "cleaned"

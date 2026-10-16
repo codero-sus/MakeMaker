@@ -1,0 +1,21 @@
+# {{ project_name }}
+
+ODIN ?= odin
+
+.PHONY: help build test run clean
+
+help:
+	@echo "{{ project_name }} targets: build test run clean"
+
+build:
+	@$(ODIN) build src -out:{{ bin_name }}
+
+test:
+	@$(ODIN) test src
+
+run:
+	@$(ODIN) run src
+
+clean:
+	@rm -f {{ bin_name }} *.o *.pdb
+	@echo "cleaned"

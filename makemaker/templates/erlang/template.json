@@ -1,0 +1,32 @@
+{
+  "flavors": [
+    "console"
+  ],
+  "default_flavor": "console",
+  "variables": {
+    "app_name": {
+      "description": "Application name",
+      "default": "{{ project_name }}"
+    },
+    "otp_version": {
+      "description": "Minimum OTP version",
+      "default": "25"
+    }
+  },
+  "requires": {
+    "*": [
+      "erl",
+      "rebar3"
+    ]
+  },
+  "rules": [],
+  "notes": "EUnit ships with OTP, so 'rebar3 eunit' needs no Hex packages. Needs OTP {{ otp_version }}+.",
+  "id": "erlang",
+  "display_name": "Erlang project",
+  "summary": "rebar3 application with an eunit suite",
+  "os": "erlang",
+  "languages": [
+    "erlang"
+  ],
+  "default_language": "erlang"
+}

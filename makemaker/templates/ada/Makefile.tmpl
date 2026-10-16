@@ -1,0 +1,22 @@
+# {{ project_name }}
+
+GPRBUILD ?= gprbuild
+
+.PHONY: help build test run clean
+
+help:
+	@echo "{{ project_name }} targets: build test run clean"
+
+build:
+	@$(GPRBUILD) -P {{ identifier }}.gpr
+
+test:
+	@$(GPRBUILD) -P {{ identifier }}.gpr
+	@./bin/test_{{ identifier }}
+
+run:
+	@./bin/main
+
+clean:
+	@rm -rf obj bin
+	@echo "cleaned"

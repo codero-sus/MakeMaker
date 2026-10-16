@@ -10,10 +10,13 @@ from makemaker.registry import load_registry, rule_matches, template_root
 #: Every target MakeMaker must ship. Other test modules import this so that
 #: adding a template is a one-line change rather than hunting down counts.
 EXPECTED_TARGETS = {
-    "android", "bash", "dart", "dotnet", "elixir", "fsharp", "go",
-    "haskell", "ios", "java", "kotlin", "linux", "lua", "macos",
-    "nim", "node", "ocaml", "perl", "php", "powershell", "python",
-    "r", "ruby", "rust", "scala", "web", "windows", "zig",
+    "ada", "android", "awk", "bash", "clojure", "crystal", "d",
+    "dart", "deno", "dotnet", "elixir", "erlang", "fortran",
+    "fsharp", "gleam", "go", "groovy", "haskell", "ios", "java",
+    "julia", "kotlin", "linux", "lua", "macos", "nim", "node",
+    "ocaml", "odin", "pascal", "perl", "php", "powershell",
+    "prolog", "python", "r", "racket", "ruby", "rust", "scala",
+    "scheme", "tcl", "web", "windows", "zig",
 }
 
 

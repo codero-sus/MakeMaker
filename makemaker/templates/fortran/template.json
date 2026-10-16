@@ -1,0 +1,31 @@
+{
+  "flavors": [
+    "console"
+  ],
+  "default_flavor": "console",
+  "variables": {
+    "app_name": {
+      "description": "Application name",
+      "default": "{{ project_name }}"
+    },
+    "fortran_standard": {
+      "description": "Language standard",
+      "default": "2018"
+    }
+  },
+  "requires": {
+    "*": [
+      "fpm"
+    ]
+  },
+  "rules": [],
+  "notes": "Uses the Fortran Package Manager (fpm). 'fpm test' builds and runs the test suite with no external dependencies.",
+  "id": "fortran",
+  "display_name": "Fortran project",
+  "summary": "Modern Fortran with fpm: library, program and unit tests",
+  "os": "fortran",
+  "languages": [
+    "fortran"
+  ],
+  "default_language": "fortran"
+}

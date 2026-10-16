@@ -1,0 +1,18 @@
+# {{ project_name }}
+
+SWIPL ?= swipl
+
+.PHONY: help test run clean
+
+help:
+	@echo "{{ project_name }} targets: test run clean"
+
+test:
+	@$(SWIPL) -g run_tests -t halt tests/test_{{ identifier }}.pl
+
+run:
+	@$(SWIPL) bin/{{ bin_name }}.pl Ada
+
+clean:
+	@rm -f *.log
+	@echo "cleaned"

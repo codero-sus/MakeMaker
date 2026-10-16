@@ -1,0 +1,19 @@
+%%% {{ project_name }} - eunit tests.
+-module({{ identifier }}_greeter_tests).
+
+-include_lib("eunit/include/eunit.hrl").
+
+greets_the_world_test() ->
+    ?assertEqual("Hello, world!", {{ identifier }}_greeter:greet()).
+
+greets_a_given_name_test() ->
+    ?assertEqual("Hello, Ada!", {{ identifier }}_greeter:greet("Ada")).
+
+falls_back_when_blank_test() ->
+    ?assertEqual("Hello, world!", {{ identifier }}_greeter:greet("   ")).
+
+adds_two_numbers_test() ->
+    ?assertEqual(5, {{ identifier }}_greeter:add(2, 3)).
+
+exposes_a_version_test() ->
+    ?assertEqual("{{ version }}", {{ identifier }}_greeter:version()).

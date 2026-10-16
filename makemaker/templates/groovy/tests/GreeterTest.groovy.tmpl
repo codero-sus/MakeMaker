@@ -1,0 +1,29 @@
+// {{ project_name }} - tests. Exits non-zero on the first failure.
+
+this.class.classLoader.addURL(new File(new File(getClass().protectionDomain
+    .codeSource.location.toURI()).parent, '../src').toURI().toURL())
+
+import {{ identifier }}.Greeter
+
+int passed = 0
+int failures = 0
+
+def check = { String what, Closure body ->
+    try {
+        body()
+        passed++
+        println "ok   - ${what}"
+    } catch (AssertionError | Exception e) {
+        failures++
+        println "FAIL - ${what}: ${e.message}"
+    }
+}
+
+check('greets the world') { assert new Greeter().greet() == 'Hello, world!' }
+check('greets a name')    { assert new Greeter('Ada').greet() == 'Hello, Ada!' }
+check('adds two numbers') { assert Greeter.add(2, 3) == 5 }
+check('reports version')  { assert Greeter.VERSION == '{{ version }}' }
+
+println ''
+println "${passed} passed, ${failures} failed"
+System.exit(failures == 0 ? 0 : 1)

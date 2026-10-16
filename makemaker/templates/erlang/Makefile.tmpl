@@ -1,0 +1,21 @@
+# {{ project_name }}
+
+REBAR ?= rebar3
+
+.PHONY: help build test run clean
+
+help:
+	@echo "{{ project_name }} targets: build test run clean"
+
+build:
+	@$(REBAR) compile
+
+test:
+	@$(REBAR) eunit
+
+run:
+	@$(REBAR) escriptize
+	@./_build/default/bin/{{ bin_name }}
+
+clean:
+	@$(REBAR) clean

@@ -1,0 +1,31 @@
+{
+  "flavors": [
+    "console"
+  ],
+  "default_flavor": "console",
+  "variables": {
+    "app_name": {
+      "description": "Application name",
+      "default": "{{ project_name }}"
+    },
+    "racket_version": {
+      "description": "Minimum Racket version",
+      "default": "8.0"
+    }
+  },
+  "requires": {
+    "*": [
+      "racket"
+    ]
+  },
+  "rules": [],
+  "notes": "rackunit ships with Racket, so 'raco test' works with no package install step.",
+  "id": "racket",
+  "display_name": "Racket project",
+  "summary": "Racket package with a module, CLI and rackunit tests",
+  "os": "racket",
+  "languages": [
+    "racket"
+  ],
+  "default_language": "racket"
+}

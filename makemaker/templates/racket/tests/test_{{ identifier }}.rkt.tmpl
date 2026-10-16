@@ -1,0 +1,18 @@
+#lang racket/base
+
+;; {{ project_name }} - tests.
+
+(require rackunit
+         (only-in "{{ identifier }}/main.rkt" add greet version))
+
+(test-case "greets the world"
+  (check-equal? (greet) "Hello, world!"))
+
+(test-case "greets a given name"
+  (check-equal? (greet "Ada") "Hello, Ada!"))
+
+(test-case "adds two numbers"
+  (check-equal? (add 2 3) 5))
+
+(test-case "exposes a version"
+  (check-equal? version "{{ version }}"))

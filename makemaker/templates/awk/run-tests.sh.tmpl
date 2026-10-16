@@ -1,0 +1,30 @@
+#!/bin/sh
+# {{ project_name }} - tests. Exits non-zero on the first failure.
+
+here="$(cd "$(dirname "$0")" && pwd)"
+AWK="{{ awk_binary }}"
+
+failures=0
+passed=0
+
+check() {
+    description="$1"; expected="$2"; actual="$3"
+    if [ "$expected" = "$actual" ]; then
+        passed=$(( passed + 1 ))
+        printf 'ok   - %s\n' "$description"
+    else
+        failures=$(( failures + 1 ))
+        printf 'FAIL - %s\n  expected: %s\n  actual:   %s\n' \
+            "$description" "$expected" "$actual"
+    fi
+}
+
+check "greets the world" "Hello, world!" \
+    "$("$AWK" -f "$here/lib/greet.awk" -v name="" </dev/null)"
+check "greets a name" "Hello, Ada!" \
+    "$("$AWK" -f "$here/lib/greet.awk" -v name="Ada" </dev/null)"
+check "adds two numbers" "5" \
+    "$("$AWK" -f "$here/lib/add.awk" -v left=2 -v right=3 </dev/null)"
+
+printf '\n%d passed, %d failed\n' "$passed" "$failures"
+[ "$failures" -eq 0 ]

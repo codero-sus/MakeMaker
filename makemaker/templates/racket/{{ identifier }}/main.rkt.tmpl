@@ -1,0 +1,16 @@
+#lang racket/base
+
+;; {{ project_name }} - {{ description }}
+
+(provide version greet add)
+
+(define version "{{ version }}")
+
+;; Greet a name, falling back to "world".
+(define (greet [name "world"])
+  (define who (string-trim (if (string? name) name "world")))
+  (format "Hello, ~a!" (if (string=? who "") "world" who)))
+
+;; Add two numbers.
+(define (add left right)
+  (+ left right))

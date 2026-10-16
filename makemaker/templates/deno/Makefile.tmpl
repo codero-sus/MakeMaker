@@ -1,0 +1,24 @@
+# {{ project_name }}
+
+DENO ?= deno
+
+.PHONY: help build test run lint clean
+
+help:
+	@echo "{{ project_name }} targets: build test run lint clean"
+
+build:
+	@$(DENO) check bin/{{ bin_name }}.ts src/greeter.ts
+
+test:
+	@$(DENO) test
+
+run:
+	@$(DENO) run --allow-read bin/{{ bin_name }}.ts
+
+lint:
+	@$(DENO) lint
+
+clean:
+	@rm -f *.log
+	@echo "cleaned"

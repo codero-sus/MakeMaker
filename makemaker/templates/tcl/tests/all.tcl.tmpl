@@ -1,0 +1,9 @@
+#!/usr/bin/env tclsh
+# {{ project_name }} - test runner.
+
+package require tcltest
+set ::tcltest::testSingleFile false
+set ::tcltest::testsDirectory [file dirname [file normalize [info script]]]
+
+set failures [::tcltest::runAllTests]
+exit [expr {$failures > 0 ? 1 : 0}]

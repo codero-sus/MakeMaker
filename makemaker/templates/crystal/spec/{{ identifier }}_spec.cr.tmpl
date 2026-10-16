@@ -1,0 +1,27 @@
+require "./spec_helper"
+
+describe {{ class_name }} do
+  describe ".greet" do
+    it "greets the world" do
+      {{ class_name }}.greet.should eq("Hello, world!")
+    end
+
+    it "greets a given name" do
+      {{ class_name }}.greet("Ada").should eq("Hello, Ada!")
+    end
+
+    it "falls back when blank" do
+      {{ class_name }}.greet("   ").should eq("Hello, world!")
+    end
+  end
+
+  describe ".add" do
+    it "adds two numbers" do
+      {{ class_name }}.add(2, 3).should eq(5)
+    end
+  end
+
+  it "exposes a version" do
+    {{ class_name }}::VERSION.should eq("{{ version }}")
+  end
+end

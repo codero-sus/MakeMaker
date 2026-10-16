@@ -1,0 +1,20 @@
+import { assertEquals } from "jsr:@std/assert@1";
+
+import { VERSION, greet, sum } from "../src/greeter.ts";
+
+Deno.test("greets the world", () => {
+  assertEquals(greet(), "Hello, world!");
+  assertEquals(greet("   "), "Hello, world!");
+});
+
+Deno.test("greets a given name", () => {
+  assertEquals(greet("Ada"), "Hello, Ada!");
+});
+
+Deno.test("sums numbers", () => {
+  assertEquals(sum(1, 2, 3), 6);
+});
+
+Deno.test("exposes a version", () => {
+  assertEquals(VERSION, "{{ version }}");
+});

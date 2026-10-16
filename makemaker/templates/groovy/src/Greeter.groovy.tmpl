@@ -1,0 +1,22 @@
+// {{ project_name }} - {{ description }}
+
+package {{ identifier }}
+
+class Greeter {
+
+    static final String VERSION = '{{ version }}'
+
+    final String name
+
+    Greeter(String name = 'world') {
+        this.name = (name == null || name.trim().isEmpty()) ? 'world' : name.trim()
+    }
+
+    String greet() {
+        "Hello, ${name}!"
+    }
+
+    static int add(int left, int right) {
+        left + right
+    }
+}

@@ -1,0 +1,16 @@
+name = "{{ identifier }}"
+version = "{{ version }}"
+license = "MIT"
+author = "{{ author }}"
+maintainer = "{{ email }}"
+copyright = "{{ copyright_year }} {{ author }}"
+description = "{{ description }}"
+
+[build]
+auto-executables = true
+auto-tests = true
+
+[[executable]]
+name = "{{ bin_name }}"
+source-dir = "app"
+main = "main.f90"

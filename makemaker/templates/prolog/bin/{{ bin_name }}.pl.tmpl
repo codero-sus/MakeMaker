@@ -1,0 +1,26 @@
+%! {{ project_name }} entry point.
+
+:- use_module('../lib/greeter').
+
+:- initialization(main, main).
+
+main(Argv) :-
+    (   Argv = ['--version']
+    ->  version(V), format('~w~n', [V])
+    ;   Argv = ['-V']
+    ->  version(V), format('~w~n', [V])
+    ;   Argv = ['--help']
+    ->  usage
+    ;   Argv = ['-h']
+    ->  usage
+    ;   Argv = [Name | _]
+    ->  atom_string(NameAtom, Name), greet(NameAtom, M), format('~w~n', [M])
+    ;   greet(M), format('~w~n', [M])
+    ).
+
+usage :-
+    version(V),
+    format('{{ project_name }} ~w~n', [V]),
+    nl,
+    format('Usage: {{ bin_name }}.pl [name]~n', []),
+    format('       {{ bin_name }}.pl --version~n', []).
