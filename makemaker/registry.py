@@ -9,8 +9,12 @@ A template is a directory under ``makemaker/templates/<id>/`` containing:
 
 from __future__ import annotations
 
+import atexit
 import fnmatch
 import json
+import shutil
+import tempfile
+import zipfile
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Dict, List, Optional
@@ -42,9 +46,79 @@ def rule_matches(pattern: str, rel_path: str) -> bool:
     return fnmatch.fnmatchcase(rel_path, pattern)
 
 
+#: Templates unpacked from a zipapp, so the path stays a real directory.
+_EXTRACTED_ROOT: Optional[Path] = None
+
+_TEMPLATES_PREFIX = "makemaker/templates/"
+
+
+def _find_containing_archive(start: Path) -> Optional[Path]:
+    """Nearest ancestor of ``start`` that is a zip archive.
+
+    Inside a zipapp ``__file__`` looks like ``/path/makemaker.pyz/makemaker/
+    registry.py``, so the archive is one of the path's ancestors.
+    """
+    for candidate in (start, *start.parents):
+        try:
+            if candidate.is_file() and zipfile.is_zipfile(candidate):
+                return candidate
+        except OSError:
+            continue
+    return None
+
+
+def _extract_bundled_templates() -> Path:
+    """Unpack the bundled templates to a temp directory, once.
+
+    ``pathlib`` cannot read through a zip archive, so when MakeMaker is
+    shipped as a single-file zipapp the templates are materialised on first
+    use. Downstream code keeps working with ordinary paths.
+    """
+    global _EXTRACTED_ROOT
+    if _EXTRACTED_ROOT is not None and _EXTRACTED_ROOT.is_dir():
+        return _EXTRACTED_ROOT
+
+    archive = _find_containing_archive(Path(__file__))
+    if archive is None:
+        raise TemplateError(
+            "cannot locate bundled templates: no template directory on disk "
+            "and no enclosing zip archive"
+        )
+
+    destination = Path(tempfile.mkdtemp(prefix="makemaker-templates-"))
+    atexit.register(shutil.rmtree, str(destination), True)
+
+    with zipfile.ZipFile(archive) as handle:
+        for info in handle.infolist():
+            if info.is_dir() or not info.filename.startswith(_TEMPLATES_PREFIX):
+                continue
+            relative = info.filename[len(_TEMPLATES_PREFIX):]
+            if not relative:
+                continue
+            target = destination / relative
+            target.parent.mkdir(parents=True, exist_ok=True)
+            with handle.open(info) as source, open(target, "wb") as out:
+                shutil.copyfileobj(source, out)
+            # Preserve any executable bit recorded in the archive.
+            mode = (info.external_attr >> 16) & 0o777
+            if mode:
+                target.chmod(mode)
+
+    _EXTRACTED_ROOT = destination
+    return destination
+
+
 def template_root() -> Path:
-    """Directory that holds the bundled templates."""
-    return Path(__file__).resolve().parent / "templates"
+    """Directory that holds the bundled templates.
+
+    Normally this is ``makemaker/templates`` next to this file. When running
+    from a zipapp there is no such directory on disk, so the templates are
+    unpacked to a temporary directory instead.
+    """
+    bundled = Path(__file__).resolve().parent / "templates"
+    if bundled.is_dir():
+        return bundled
+    return _extract_bundled_templates()
 
 
 @dataclass

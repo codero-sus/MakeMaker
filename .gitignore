@@ -11,6 +11,13 @@ venv/
 /mknative
 /mknative.exe
 
+# Local scratch output from verifying CI steps
+/gen-python/
+/gen-node-ts/
+/gen-node-js/
+/bundled/
+/out/
+
 # Editors / OS
 .vscode/
 .idea/

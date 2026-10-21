@@ -1,0 +1,144 @@
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      draft:
+        description: "Create as a draft release"
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+
+# Two kinds of artifact are produced, and the difference matters:
+#
+#   makemaker.pyz        one file, runs on any OS that has Python 3.9+.
+#                        Built with the standard library only.
+#   makemaker-<os>       a native binary needing no Python at all, built with
+#                        PyInstaller. PyInstaller cannot cross-compile, so one
+#                        runner per OS produces its own.
+#
+# mknative-<os> is the optional C companion, compiled per OS the same way.
+jobs:
+  zipapp:
+    name: zipapp (cross-platform)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Verify before packaging
+        run: |
+          python -m unittest discover -s tests -t .
+          python -m makemaker template validate
+          python -m makemaker template check --all
+
+      - name: Build
+        run: python tools/build_zipapp.py --output dist/makemaker.pyz
+
+      - name: Smoke test the artifact we are about to ship
+        run: |
+          python dist/makemaker.pyz version
+          python dist/makemaker.pyz template validate
+          python dist/makemaker.pyz new "Release Check" --target linux --out out
+          test -f out/release-check/src/main.c
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: makemaker.pyz
+          path: dist/makemaker.pyz
+          if-no-files-found: error
+
+  binary:
+    name: binary (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            label: linux-x64
+          - os: macos-latest
+            label: macos-arm64
+          - os: windows-latest
+            label: windows-x64
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install PyInstaller
+        run: python -m pip install --upgrade pyinstaller
+
+      - name: Build the native binary
+        run: python tools/build_binary.py --output-dir dist
+
+      - name: Smoke test the binary
+        shell: bash
+        run: |
+          BIN="dist/makemaker"
+          if [ -f "dist/makemaker.exe" ]; then BIN="dist/makemaker.exe"; fi
+          "$BIN" version
+          "$BIN" template validate
+          "$BIN" new "Release Check" --target linux --out out
+          test -f out/release-check/src/main.c
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: makemaker-${{ matrix.label }}
+          path: dist/makemaker*
+          if-no-files-found: error
+
+  companion:
+    name: mknative (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            label: linux-x64
+          - os: macos-latest
+            label: macos-arm64
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Compile
+        run: python tools/build_native.py --output build/mknative
+
+      - name: Smoke test
+        run: ./build/mknative doctor --json
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: mknative-${{ matrix.label }}
+          path: build/mknative
+          if-no-files-found: error
+
+  publish:
+    name: publish release
+    needs: [zipapp, binary, companion]
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v')
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: List what will be attached
+        run: find artifacts -type f | sort
+
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: artifacts/**/*
+          draft: ${{ inputs.draft || true }}
+          generate_release_notes: true
