@@ -45,7 +45,9 @@ jobs:
         run: |
           python dist/makemaker.pyz version
           python dist/makemaker.pyz template validate
-          python dist/makemaker.pyz new "Release Check" --target linux --out out
+          # --lang c pins the language: the linux template defaults to C++,
+          # which writes src/main.cpp and made this assertion fail.
+          python dist/makemaker.pyz new "Release Check" --target linux --lang c --out out
           test -f out/release-check/src/main.c
 
       - uses: actions/upload-artifact@v4
@@ -86,7 +88,7 @@ jobs:
           if [ -f "dist/makemaker.exe" ]; then BIN="dist/makemaker.exe"; fi
           "$BIN" version
           "$BIN" template validate
-          "$BIN" new "Release Check" --target linux --out out
+          "$BIN" new "Release Check" --target linux --lang c --out out
           test -f out/release-check/src/main.c
 
       - uses: actions/upload-artifact@v4
