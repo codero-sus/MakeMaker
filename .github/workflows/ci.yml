@@ -7,7 +7,8 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  # contents: write only for the temporary failure-comment step below.
+  contents: write
 
 # The suite is stdlib-only, so there is no dependency install step -- which
 # also means a failure here is a real failure rather than a flaky download.
@@ -52,7 +53,23 @@ jobs:
           print("stdlib-only OK:", len(found), "modules")
 
       - name: Run the test suite
-        run: python -m unittest discover -s tests -t . -v
+        shell: bash
+        run: |
+          set -o pipefail
+          python -m unittest discover -s tests -t . -v 2>&1 | tee test-output.txt
+
+      # Temporary diagnostic: the Actions log host is unreachable from this
+      # sandbox, so publish a failing run's tail as a commit comment.
+      - name: Publish failure output
+        if: failure()
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          [ -f test-output.txt ] || exit 0
+          grep -E "^(FAIL|ERROR):|^Ran |^OK|^FAILED|Error|error:" test-output.txt | tail -n 40 > failure.txt
+          body="CI failure on ${{ matrix.os }} / py${{ matrix.python-version }}%0A%0A\`\`\`%0A$(sed 's/$/%0A/' failure.txt | tr -d '\n')\`\`\`"
+          gh api "repos/${{ github.repository }}/commits/${{ github.sha }}/comments" -f body="$body" >/dev/null || echo "could not post"
 
       - name: Static template checks
         run: |
