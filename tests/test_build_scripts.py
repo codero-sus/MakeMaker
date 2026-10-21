@@ -24,6 +24,10 @@ import build_zipapp  # noqa: E402
 
 HAS_COMPILER = any(shutil.which(c) for c in ("cc", "gcc", "clang"))
 
+# mknative includes unistd.h / sys/wait.h / sys/utsname.h, so it will not
+# compile with MSVC even when a `cc` is on PATH. It is POSIX-only by design.
+IS_POSIX = os.name == "posix"
+
 
 class VersionTest(unittest.TestCase):
     def test_read_version_matches_the_package(self):
@@ -67,6 +71,7 @@ class ExecutableNameTest(unittest.TestCase):
             os.name = original
 
 
+@unittest.skipUnless(IS_POSIX, "mknative is POSIX-only")
 class NativeBuildTest(unittest.TestCase):
     """Actually compile through the script, not just check its arguments."""
 
