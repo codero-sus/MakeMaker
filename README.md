@@ -71,13 +71,17 @@ runs on. The release workflow runs it on one runner per OS and attaches the
 results. PyInstaller is a build-time tool only -- MakeMaker itself still
 imports nothing outside the standard library.
 
-The optional C companion is likewise host-specific:
+The optional C companion is POSIX-only:
 
 ```sh
-python3 tools/build_native.py          # writes build/mknative[.exe]
+python3 tools/build_native.py          # writes build/mknative
 ```
 
-That script exists because `make` is usually absent on Windows.
+`native/mknative.c` uses `unistd.h`, `sys/wait.h` and `sys/utsname.h`, so it
+will not compile with MSVC. That is deliberate rather than an oversight: the
+companion shells out through `fork`/`exec`, and the zipapp above is what
+covers Windows. `makemaker build` and `makemaker run` work there without it,
+because they drive the same recipe contract in Python.
 
 ## Continuous integration
 
@@ -93,7 +97,29 @@ That script exists because `make` is usually absent on Windows.
    zipapp by generating a project *from inside the bundle*.
 
 Steps that need a toolchain skip themselves when it is absent, so a Windows
-runner does not fail for lacking `make` or `perl`.
+runner does not fail for lacking `make` or `perl`. Two classes of test go
+further than that and skip on Windows outright, because no toolchain gate
+can express it: the ones that execute a shebang script, and the ones that
+assert a Unix executable bit.
+
+A separate `mknative` job builds the C companion with `-Werror` on Linux and
+macOS and runs `mknative doctor --json` on the result.
+
+`.github/workflows/release.yml` runs on a `v*` tag and produces six artifacts:
+
+| artifact | what it is |
+| --- | --- |
+| `makemaker.pyz` | one file, needs Python 3.9+ |
+| `makemaker-linux-x64` | PyInstaller binary, no Python needed |
+| `makemaker-macos-arm64` | same, arm64 |
+| `makemaker-windows-x64.exe` | same, Windows |
+| `mknative-linux-x64` | the C companion |
+| `mknative-macos-arm64` | the C companion |
+
+Every binary is smoke-tested on the runner that built it: `version`,
+`template validate`, and a real project generation. They are named per
+platform because GitHub release assets share one flat namespace, and three
+files called `makemaker` would silently overwrite each other.
 
 ## Quick start
 
@@ -300,7 +326,8 @@ language restrictions, user-settable variables, required tools, and file rules:
 
 `native/mknative.c` is C11/POSIX with no dependencies. It contains a small JSON
 reader, a `PATH` search, version capture via `popen`, and a `fork`/`exec`
-runner:
+runner. It is **POSIX-only**: those three headers do not exist on MSVC, so the
+companion builds on Linux and macOS and is skipped on Windows.
 
 ```sh
 mknative doctor --json      # host, tool versions, what is missing
@@ -338,8 +365,10 @@ Some tests go further and *run* what was generated:
 
 ## What is verified here, and what is not
 
-Verified on Linux (gcc 12, GNU Make 4.3, Python 3.11, Node 22, Perl 5.36,
-Bash 5.2):
+The suite runs green in CI on **ubuntu, macOS and Windows × Python 3.9, 3.11
+and 3.13**. The end-to-end checks below ran on Linux (gcc 12, GNU Make 4.3,
+Python 3.11, Node 22, Perl 5.36, Bash 5.2) and, where the toolchain exists,
+on the other two:
 
 * Linux console projects in C and C++ build, run and pass their tests.
 * Generated **Python** packages pass `make test`, `make lint`, and run.
@@ -370,6 +399,13 @@ anything that does not line up.
 
 Two caveats worth naming rather than burying:
 
+* The matrix is not decorative. Its first run found six real defects that
+  Linux-only testing had hidden: `Path.write_text(newline=...)` is Python
+  3.10+, which broke every `makemaker new` on 3.9; node's test summary is
+  `# fail 0` in TAP mode but `ℹ fail 0` in the newer reporter; a child
+  Python started without `SystemRoot` aborts during startup on Windows;
+  `st_mode & S_IXUSR` is always 0 on NTFS; shebang scripts cannot be
+  executed by `subprocess` there; and `mknative` does not compile with MSVC.
 * Each new template's tests were written but **never executed** here, because
   the interpreter is missing. A test that has not run may itself be wrong; the
   project source has been reviewed by generating and reading it, which caught
