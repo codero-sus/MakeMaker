@@ -8,6 +8,7 @@ installed, so the suite still runs on a bare machine.
 from __future__ import annotations
 
 import os
+import re
 import shutil
 import subprocess
 import tempfile
@@ -25,6 +26,19 @@ HAS_NODE = shutil.which("node") is not None
 HAS_BASH = shutil.which("bash") is not None
 HAS_PERL = shutil.which("perl") is not None
 HAS_AWK = shutil.which("awk") is not None
+
+# Windows cannot execute a shebang script via subprocess, and has no Unix
+# permission bits, so the script-driven projects are only exercised on POSIX.
+IS_POSIX = os.name == "posix"
+
+
+#: Node's test runner prints its summary as "# fail 0" in TAP mode and as
+#: "ℹ fail 0" in the newer spec reporter, so match the substance, not the glyph.
+NO_FAILURES = re.compile(r"(?<![\w-])fail\s+0(?![0-9])")
+
+
+def assert_node_tests_passed(test_case, stdout: str) -> None:
+    test_case.assertRegex(stdout, NO_FAILURES)
 
 
 def scaffold(target: str, language: str, destination: Path) -> Path:
@@ -109,7 +123,7 @@ class GeneratedNodeProjectTests(unittest.TestCase):
             ["node", "--test"], cwd=str(project), capture_output=True, text=True,
         )
         self.assertEqual(completed.returncode, 0, completed.stdout + completed.stderr)
-        self.assertIn("# fail 0", completed.stdout)
+        assert_node_tests_passed(self, completed.stdout)
 
     def test_javascript_tests_pass(self):
         project = self.run_for_language("javascript")
@@ -117,7 +131,7 @@ class GeneratedNodeProjectTests(unittest.TestCase):
             ["node", "--test"], cwd=str(project), capture_output=True, text=True,
         )
         self.assertEqual(completed.returncode, 0, completed.stdout + completed.stderr)
-        self.assertIn("# fail 0", completed.stdout)
+        assert_node_tests_passed(self, completed.stdout)
 
     def test_cli_runs_and_sums_arguments(self):
         for language, extension in (("typescript", "ts"), ("javascript", "js")):
@@ -168,6 +182,7 @@ class GeneratedProjectMetadataTests(unittest.TestCase):
                     )
 
 
+@unittest.skipUnless(IS_POSIX, "needs POSIX script execution")
 @unittest.skipUnless(HAS_BASH, "needs bash")
 class GeneratedBashProjectTests(unittest.TestCase):
     @classmethod
@@ -269,7 +284,7 @@ class GeneratedWebProjectTests(unittest.TestCase):
             capture_output=True, text=True,
         )
         self.assertEqual(completed.returncode, 0, completed.stdout + completed.stderr)
-        self.assertIn("# fail 0", completed.stdout)
+        assert_node_tests_passed(self, completed.stdout)
 
     def test_index_html_references_the_generated_assets(self):
         html = (self.project / "index.html").read_text(encoding="utf-8")
@@ -279,6 +294,7 @@ class GeneratedWebProjectTests(unittest.TestCase):
         self.assertNotIn("{{", html)
 
 
+@unittest.skipUnless(IS_POSIX, "needs POSIX script execution")
 @unittest.skipUnless(HAS_AWK, "needs awk")
 class GeneratedAwkProjectTests(unittest.TestCase):
     @classmethod

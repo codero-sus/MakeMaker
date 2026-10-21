@@ -202,7 +202,12 @@ def _write_rendered(
     except TemplateError as exc:
         raise TemplateError(f"{source.name}: {exc}") from None
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(output, encoding="utf-8", newline=newline_for(rel_path))
+    # open() rather than Path.write_text(): the `newline` keyword was only
+    # added to write_text in Python 3.10, and this package supports 3.9.
+    # Passing it explicitly is what stops Windows translating \n into \r\n
+    # behind our back, so the line-ending policy has to be ours.
+    with open(path, "w", encoding="utf-8", newline=newline_for(rel_path)) as handle:
+        handle.write(output)
 
 
 def _apply_mode(path: Path, planned: PlannedFile) -> None:
