@@ -237,6 +237,10 @@ class GenerationTests(unittest.TestCase):
             "android", "gui", "kotlin", suffix="exec"
         )
         gradlew = destination / "gradlew"
+        if os.name == "nt":
+            # Windows has no Unix permission bits; only the POSIX side can
+            # meaningfully assert an executable bit was recorded.
+            self.skipTest("executable bits are not representable on Windows")
         self.assertTrue(os.access(gradlew, os.X_OK), "gradlew is not executable")
         self.assertTrue(gradlew.stat().st_mode & stat.S_IXUSR)
 

@@ -8,6 +8,7 @@ They are skipped when no C compiler or no GNU make is available.
 from __future__ import annotations
 
 import json
+import os
 import shutil
 import subprocess
 import tempfile
@@ -20,10 +21,15 @@ from makemaker.recipes import build_commands
 from makemaker.registry import load_registry, resolve_variable_defaults
 from makemaker.variables import build_variables
 
+# mknative uses unistd.h, sys/wait.h and sys/utsname.h, so it does not
+# compile with MSVC. The companion is POSIX-only by design; the zipapp is
+# what ships cross-platform.
+IS_POSIX = os.name == "posix"
 HAS_COMPILER = native._compiler() is not None
 HAS_MAKE = shutil.which("make") is not None
 
 
+@unittest.skipUnless(IS_POSIX, "mknative is POSIX-only")
 @unittest.skipUnless(HAS_COMPILER, "no C compiler available")
 class NativeBuildTests(unittest.TestCase):
     @classmethod
@@ -100,6 +106,7 @@ class NativeBuildTests(unittest.TestCase):
                 self.assertIn(tool, from_native["tools"], f"mknative missed {tool}")
 
 
+@unittest.skipUnless(IS_POSIX, "mknative is POSIX-only")
 @unittest.skipUnless(HAS_COMPILER and HAS_MAKE, "needs a C compiler and make")
 class NativeDrivesGeneratedProjectTests(unittest.TestCase):
     """Generate a real project, then build/run it through both executors."""
