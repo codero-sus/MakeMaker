@@ -91,10 +91,23 @@ jobs:
           "$BIN" new "Release Check" --target linux --lang c --out out
           test -f out/release-check/src/main.c
 
+      # Release assets live in one flat namespace, so an artifact called
+      # makemaker from Linux and one called makemaker from macOS silently
+      # overwrite each other and only one reaches the release. Name each
+      # binary for its platform before uploading.
+      - name: Give the artifact a platform-specific name
+        shell: bash
+        run: |
+          if [ -f dist/makemaker.exe ]; then
+            mv dist/makemaker.exe "dist/makemaker-${{ matrix.label }}.exe"
+          else
+            mv dist/makemaker "dist/makemaker-${{ matrix.label }}"
+          fi
+
       - uses: actions/upload-artifact@v4
         with:
           name: makemaker-${{ matrix.label }}
-          path: dist/makemaker*
+          path: dist/makemaker-${{ matrix.label }}*
           if-no-files-found: error
 
   companion:
@@ -120,10 +133,13 @@ jobs:
       - name: Smoke test
         run: ./build/mknative doctor --json
 
+      - name: Give the artifact a platform-specific name
+        run: mv build/mknative build/mknative-${{ matrix.label }}
+
       - uses: actions/upload-artifact@v4
         with:
           name: mknative-${{ matrix.label }}
-          path: build/mknative
+          path: build/mknative-${{ matrix.label }}
           if-no-files-found: error
 
   publish:
