@@ -44,6 +44,57 @@ makemaker native build        # or: make -C native
 
 Requires Python 3.9+. No third-party packages.
 
+## Run it as a single file
+
+```sh
+python3 tools/build_zipapp.py          # writes dist/makemaker.pyz
+./dist/makemaker.pyz list              # on Unix it is directly executable
+python3 dist/makemaker.pyz list        # on Windows, invoke it via python
+```
+
+`makemaker.pyz` is one ~230 KiB file containing the package and all 394
+template files. It runs on Linux, macOS and Windows wherever Python 3.9+ is
+installed, and it is built with the standard library only -- no PyInstaller,
+no dependencies. Templates are unpacked to a temporary directory on first use,
+because `pathlib` cannot read through a zip archive.
+
+If you want a binary that needs **no Python at all**, that is what
+`tools/build_binary.py` is for:
+
+```sh
+python3 -m pip install pyinstaller     # build-time only
+python3 tools/build_binary.py          # writes dist/makemaker[.exe]
+```
+
+PyInstaller cannot cross-compile, so this produces a binary for the machine it
+runs on. The release workflow runs it on one runner per OS and attaches the
+results. PyInstaller is a build-time tool only -- MakeMaker itself still
+imports nothing outside the standard library.
+
+The optional C companion is likewise host-specific:
+
+```sh
+python3 tools/build_native.py          # writes build/mknative[.exe]
+```
+
+That script exists because `make` is usually absent on Windows.
+
+## Continuous integration
+
+`.github/workflows/ci.yml` runs on every push and pull request across
+**ubuntu / macOS / windows × Python 3.9, 3.11 and 3.13**:
+
+1. asserts the stdlib-only claim by walking the AST for non-stdlib imports;
+2. runs the full test suite;
+3. runs `makemaker template validate` and `template check --all`;
+4. generates Python and Node projects (both TypeScript and JavaScript) and
+   fails if any template syntax survived into the output;
+5. builds the C companion with `-Werror` and the zipapp, then smoke-tests the
+   zipapp by generating a project *from inside the bundle*.
+
+Steps that need a toolchain skip themselves when it is absent, so a Windows
+runner does not fail for lacking `make` or `perl`.
+
 ## Quick start
 
 ```sh
@@ -173,12 +224,18 @@ makemaker/
 ├── variables.py     deterministic names: slugs, packages, bundle ids, GUIDs
 ├── recipes.py       the build recipe recorded into project.json
 ├── native.py        bridge to the C companion (+ Python fallbacks)
+├── lint.py          static template checks (`makemaker template validate`)
 ├── cli.py           argument parsing and output
 └── templates/       one directory per target
 native/
 ├── mknative.c       C11: toolchain probe, JSON reader, build driver
 └── Makefile
-tests/               229 unittest cases, standard library only
+tools/
+├── build_zipapp.py  single-file cross-platform bundle (stdlib only)
+├── build_binary.py  native binary via PyInstaller (build-time tool)
+└── build_native.py  compile mknative, including on Windows
+.github/workflows/   ci.yml (test matrix) and release.yml (artifacts)
+tests/               253 unittest cases, standard library only
 ```
 
 ### The template engine
@@ -261,7 +318,7 @@ fails loudly instead of silently doing nothing.
 python3 -m unittest discover -s tests -t . -v
 ```
 
-229 tests, standard library only. They cover the engine (substitution,
+253 tests, standard library only. They cover the engine (substitution,
 expressions, filters, blocks, `{% raw %}`, the bounded compile cache,
 whitespace control, error positions), name and package derivation, registry
 validation, line-ending policy, generation of **every** template in **every**

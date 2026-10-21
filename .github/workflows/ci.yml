@@ -1,0 +1,127 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# The suite is stdlib-only, so there is no dependency install step -- which
+# also means a failure here is a real failure rather than a flaky download.
+jobs:
+  test:
+    name: ${{ matrix.os }} / py${{ matrix.python-version }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        python-version: ["3.9", "3.11", "3.13"]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Prove the stdlib-only claim
+        shell: python
+        run: |
+          import ast, pathlib, sys
+          allowed = {
+              "argparse", "atexit", "collections", "dataclasses", "datetime",
+              "fnmatch", "hashlib", "json", "os", "pathlib", "platform", "re",
+              "shlex", "shutil", "stat", "subprocess", "sys", "tempfile",
+              "typing", "unittest", "uuid", "zipapp", "zipfile", "__future__",
+          }
+          found = set()
+          for path in pathlib.Path("makemaker").rglob("*.py"):
+              for node in ast.walk(ast.parse(path.read_text(encoding="utf-8"))):
+                  if isinstance(node, ast.Import):
+                      found |= {a.name.split(".")[0] for a in node.names}
+                  elif isinstance(node, ast.ImportFrom) and node.level == 0 and node.module:
+                      found.add(node.module.split(".")[0])
+          external = sorted(found - allowed)
+          if external:
+              print("non-stdlib imports:", external)
+              sys.exit(1)
+          print("stdlib-only OK:", len(found), "modules")
+
+      - name: Run the test suite
+        run: python -m unittest discover -s tests -t . -v
+
+      - name: Static template checks
+        run: |
+          python -m makemaker template validate
+          python -m makemaker template check --all
+
+      # Every generated project must render with no leftover template syntax,
+      # and the ones this runner can actually build must build.
+      # Each target needs its own --out: two `makemaker new` calls sharing a
+      # directory collide on <dir>/<slug> and the second refuses to overwrite.
+      # Languages are named explicitly rather than assumed -- the node default
+      # is TypeScript, not JavaScript.
+      - name: Generate and check real projects
+        shell: bash
+        run: |
+          set -e
+          python -m makemaker new "CI Check" --target python --out gen-python
+          python -m makemaker new "CI Check" --target node --lang typescript --out gen-node-ts
+          python -m makemaker new "CI Check" --target node --lang javascript --out gen-node-js
+
+          test -f gen-python/ci-check/src/ci_check/core.py
+          test -f gen-node-ts/ci-check/src/index.ts
+          test -f gen-node-js/ci-check/src/index.js
+          # Only the TypeScript project should carry a tsconfig.
+          test -f gen-node-ts/ci-check/tsconfig.json
+          test ! -f gen-node-js/ci-check/tsconfig.json
+          echo "all three projects generated with the expected files"
+
+          if grep -RIn '{{' gen-python/ gen-node-ts/ gen-node-js/; then
+            echo "template syntax leaked into generated output"
+            exit 1
+          fi
+          echo "generated projects are clean"
+
+      - name: Build the C companion (non-Windows)
+        if: matrix.os != 'windows-latest'
+        run: |
+          python tools/build_native.py
+          ./build/mknative doctor --json | head -20
+
+      - name: Build the single-file zipapp
+        run: |
+          python tools/build_zipapp.py --output dist/makemaker.pyz
+          python dist/makemaker.pyz version
+          python dist/makemaker.pyz template validate
+          python dist/makemaker.pyz new "Bundle CI" --target python --out bundled
+          test -f bundled/bundle-ci/src/bundle_ci/core.py
+
+      - name: Upload the zipapp
+        if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.11'
+        uses: actions/upload-artifact@v4
+        with:
+          name: makemaker-pyz
+          path: dist/makemaker.pyz
+          if-no-files-found: error
+
+  # A separate job so a slow compile never blocks the test matrix, and so the
+  # warning-free build is checked explicitly with -Werror.
+  native:
+    name: mknative ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Compile with -Werror
+        run: |
+          make -C native CFLAGS="-std=c11 -O2 -Wall -Wextra -pedantic -Werror"
+      - name: Smoke test
+        run: ./build/mknative doctor --json
