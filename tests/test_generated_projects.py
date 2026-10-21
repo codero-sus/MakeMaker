@@ -11,6 +11,7 @@ import os
 import re
 import shutil
 import subprocess
+import sys
 import tempfile
 import unittest
 from pathlib import Path
@@ -86,9 +87,14 @@ class GeneratedPythonProjectTests(unittest.TestCase):
         self.assertIn("Gen Check says hello (2 + 3 = 5)", completed.stdout)
 
     def test_cli_accepts_arguments(self):
-        env = {"PYTHONPATH": str(self.project / "src"), "PATH": "/usr/bin:/bin"}
+        # Point PYTHONPATH at src/ so the package has to be importable on its
+        # own, without make's help. Inherit the parent environment instead of
+        # replacing it: on Windows a child Python started without SystemRoot
+        # cannot seed its hash and aborts during startup, and a hardcoded
+        # POSIX PATH resolves nothing there.
+        env = dict(os.environ, PYTHONPATH=str(self.project / "src"))
         completed = subprocess.run(
-            ["python3", "-m", "gen_check", "1", "2", "3", "4"],
+            [sys.executable, "-m", "gen_check", "1", "2", "3", "4"],
             cwd=str(self.project), capture_output=True, text=True, env=env,
         )
         self.assertEqual(completed.returncode, 0, completed.stderr)
